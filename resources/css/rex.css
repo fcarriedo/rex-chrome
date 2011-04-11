@@ -1,0 +1,18 @@
+body {
+  font-family: sans-serif;
+  width: 350px;
+}
+
+div#subtitle {
+  font-family: sans-serif;
+  color: #999;
+  font-size: 55%;
+  letter-spacing: 2px;
+}
+
+div.group {
+  font-family: monospace;
+  font-size: 85%;
+  border-bottom: 1px solid darkred;
+  padding: 3px;
+}

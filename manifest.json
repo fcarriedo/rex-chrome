@@ -1,0 +1,17 @@
+{
+  "name": "Rex",
+  "version": "0.1",
+  "description": "Covore Google Chrome Extension.",
+  "icons": {
+    "16": "resources/images/rex128.png",
+    "48": "resources/images/rex128.png",
+    "128": "resources/images/rex128.png"
+  },
+  "browser_action": {
+    "popup": "main.html",
+    "default_icon": "resources/images/rex.png"
+  },
+  "permissions": [
+    "https://convore.com/api/*.json"
+  ]
+}

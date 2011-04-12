@@ -12,6 +12,7 @@
     "default_icon": "resources/images/rex.png"
   },
   "permissions": [
+    "tabs",
     "https://convore.com/api/*.json"
   ]
 }

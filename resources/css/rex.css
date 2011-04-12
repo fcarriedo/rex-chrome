@@ -4,15 +4,23 @@ body {
 }
 
 div#subtitle {
-  font-family: sans-serif;
   color: #999;
-  font-size: 55%;
+  font-size: 65%;
   letter-spacing: 2px;
 }
 
 div.group {
-  font-family: monospace;
   font-size: 85%;
-  border-bottom: 1px solid darkred;
-  padding: 3px;
+  background-color: lightblue;
+  border: 1px solid royalblue;
+  padding: 5px;
+  margin: 5px;
+}
+
+div.group img {
+  width: 24px;
+}
+
+.topic {
+  font-size: 65%;
 }

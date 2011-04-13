@@ -18,11 +18,9 @@
           password: pswd,
           success: function() {
             showFeed();
-            console.log('successfull login');
           },
           error: function() {
             $('#login-err').text('Wrong credentials');
-            console.log('Error on login');
           }
         };
 

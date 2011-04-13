@@ -18,19 +18,16 @@ function checkCredentials() {
 }
 
 function setupGlobalCreds(convoreUsr, convorePswd) {
+  // Set usr/pswd for general ajax calls.
   $.ajaxSetup({
     username: convoreUsr,
     password: convorePswd
   });
+
+  // Persist creds in the localStorage
+  persistCredentials(convoreUsr, convorePswd);
 }
 
-function getPopupView() {
-  return chrome.extension.getViews({type:'popup'})[0];
-}
-
-function getBackgroundPage() {
-  return chrome.extension.getBackgroundPage();
-}
 
 function retrieveCredentials() {
   var auth = localStorage.getItem('convore.auth');
@@ -55,9 +52,6 @@ function retrieveCredentials() {
   }
 }
 
-function persistCredentials(username, password) {
-  localStorage.setItem('convore.auth', username + ':' + password);
-}
 
 function validateCredentials(authContext) {
   var verifyAccountUrl = convoreApiUrl + '/account/verify.json';
@@ -67,10 +61,8 @@ function validateCredentials(authContext) {
       Authorization: 'Basic ' + btoa(authContext.username + ':' + authContext.password)
     },
     success: function(data) {
-      console.log(data);
       if( !data.error ) {
         setupGlobalCreds(authContext.username, authContext.password);
-        persistCredentials(authContext.username, authContext.password);
         if(authContext.success) {
           authContext.success.call();
         }
@@ -89,17 +81,30 @@ function validateCredentials(authContext) {
   });
 }
 
-function fetchGroups() {
-  var popupView = getPopupView();
-  if(popupView) {
-    var url = convoreApiUrl + '/groups.json';
-    $.getJSON(url, function(data) {
-      popupView.renderGroups( data.groups );
-    });
-  }
+function fetchGroups( callback ) {
+  var url = convoreApiUrl + '/groups.json';
+  $.getJSON(url, function(data) {
+    callback.call(this, data.groups );
+  });
 }
 
 function openInConvore(relativePath) {
   var url = convoreUrl + relativePath;
   chrome.tabs.create({url: url}, function(tab) {});
+}
+
+function removeCredentials() {
+  localStorage.removeItem('convore.auth');
+}
+
+function persistCredentials(username, password) {
+  localStorage.setItem('convore.auth', username + ':' + password);
+}
+
+function getPopupView() {
+  return chrome.extension.getViews({type:'popup'})[0];
+}
+
+function getBackgroundPage() {
+  return chrome.extension.getBackgroundPage();
 }

@@ -6,6 +6,15 @@ function initRex() {
 }
 
 function checkCredentials() {
+  var popupView = getPopupView();
+  if(popupView) {
+    var authContext = retrieveCredentials();
+    if( !authContext ) {
+      popupView.showLoginPage();
+    } else {
+      popupView.showFeed();
+    }
+  }
 }
 
 function setupGlobalCreds(convoreUsr, convorePswd) {
@@ -78,4 +87,19 @@ function validateCredentials(authContext) {
       console.log('error: ' + errorThrown);
     }
   });
+}
+
+function fetchGroups() {
+  var popupView = getPopupView();
+  if(popupView) {
+    var url = convoreApiUrl + '/groups.json';
+    $.getJSON(url, function(data) {
+      popupView.renderGroups( data.groups );
+    });
+  }
+}
+
+function openInConvore(relativePath) {
+  var url = convoreUrl + relativePath;
+  chrome.tabs.create({url: url}, function(tab) {});
 }

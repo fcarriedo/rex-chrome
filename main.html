@@ -35,6 +35,11 @@
       function showFeed() {
         $('#login').hide();
         $('#feed').fadeIn();
+        fetchGroups();
+      }
+
+      function renderGroups( groups ) {
+        $('#convore-content').html( $('#groups-tmpl').tmpl(groups) );
       }
     </script>
   </head>
@@ -56,5 +61,15 @@
 
       <h5><a href='#' onClick='logout()'>logout</a></h5>
     </div>
+
+
+
+    <script id='groups-tmpl' type=text/x-jquery-tmpl'>
+      <div class='group'>
+        <img src='${creator.img}' title='${creator.username}'/>
+        <a href='#' onClick='openInConvore("${url}")'>${name}</a>
+        <span class='topic'> Topics: ${topics_count} </span>
+      </div>
+    </script>
   </body>
 </html>

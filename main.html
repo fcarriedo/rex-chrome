@@ -1,19 +1,62 @@
 <html>
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="resources/css/rex.css" type="text/css" media="screen" charset="utf-8"/>
+    <link rel="stylesheet" href="resources/css/rex.css" type="text/css"/>
+    <script src='resources/js/jquery.min.js'></script>
+    <script src='resources/js/jquery.tmpl.min.js'></script>
+    <script src='resources/js/underscore-min.js'></script>
+    <script src='resources/js/backbone-min.js'></script>
     <script src='resources/js/rex.js'></script>
     <script>
-      function setContent(htmlContent) {
-        document.getElementById('content-content').innerHTML = htmlContent;
+      $(document).ready( initRex() );
+
+      function login() {
+        var usr = $('#usr').val();
+        var pswd = $('#pswd').val();
+
+        var authContext = {
+          username: usr,
+          password: pswd,
+          success: function() {
+            showFeed();
+            console.log('successfull login');
+          },
+          error: function() {
+            $('#login-err').text('Wrong credentials');
+            console.log('Error on login');
+          }
+        };
+
+        validateCredentials( authContext );
+      }
+
+      function showLoginPage() {
+        $('#feed').hide();
+        $('#login').fadeIn();
+      }
+
+      function showFeed() {
+        $('#login').hide();
+        $('#feed').fadeIn();
       }
     </script>
   </head>
   <body>
-    <h2><img src='resources/images/rex.png' title='rex'/> Rex</h2>
-    <div id='subtitle'>(a Convore extension)</div><br/>
-    <div id='convore-content'>Loading...</div>
+    <h2><img src='resources/images/rex.png' title='rex'/> rex</h2>
 
-    <h5><a href='#' onClick='logout()'>logout</a></h5>
+    <div id='login'>
+      <table>
+        <tr><td>Username:</td><td><input id='usr' type='text'/></td></tr>
+        <tr><td>Password:</td><td><input id='pswd' type='password'/></td></tr>
+        <tr><td colspan='2'><button onClick='login()'>Login</button></td></tr>
+      </table>
+      <div id='login-err'></div>
+    </div>
+
+    <div id="feed" style='visibility: hidden'>
+      <div id='subtitle'>(a Convore extension)</div><br/>
+      <div id='convore-content'>Loading...</div>
+
+      <h5><a href='#' onClick='logout()'>logout</a></h5>
+    </div>
   </body>
 </html>

@@ -1,96 +1,81 @@
-var convrBaseApiUrl = 'https://convore.com/api';
-var convrUrl = 'https://convore.com';
-
+var convoreUrl = 'https://convore.com';
+var convoreApiUrl = 'https://convore.com/api';
 
 function initRex() {
-  // If auth creds not in local storage... login page and store.
-  // Then load init page.
-  checkCredentials();
-  //loadInitContent();
-}
-
-function logout() {
-  localStorage.removeItem('convore.auth');
   checkCredentials();
 }
 
 function checkCredentials() {
-  var auth = localStorage.getItem('convore.auth');
-  if(!auth) {
-    chrome.browserAction.setPopup({popup: 'login.html'});
-  } else {
-    chrome.browserAction.setPopup({popup: 'main.html'});
-
-    // If exists.. get the usr/pswd and configure ajax calls.
-
-    var authParts = auth.split(':');
-    var convrUsr = authParts[0];
-    var convrPswd = authParts[1];
-
-    setupCreds(convrUsr, convrPswd);
-
-    var validateAccountUrl = convrBaseApiUrl + '/account/verify.json';
-    $.get(validateAccountUrl, function(data) {
-      if(data.error) {
-        alert('Could not verify your account.');
-        // Redirect to login page.
-      } else {
-        loadInitContent();
-      }
-    });
-  }
 }
 
-function setupCreds(usr, pswd) {
+function setupGlobalCreds(convoreUsr, convorePswd) {
   $.ajaxSetup({
-    username: usr,
-    password: pswd
+    username: convoreUsr,
+    password: convorePswd
   });
 }
 
-function loadInitContent() {
-  setMainContent();
-  var url = convrBaseApiUrl + '/groups.json';
-  $.getJSON(url, function(data) {
-    var groups = data.groups;
-    for(var i = 0; i<groups.length; i++) {
-      $('#convore-content').append( createGroupElem(groups[i]) );
+function getPopupView() {
+  return chrome.extension.getViews({type:'popup'})[0];
+}
+
+function getBackgroundPage() {
+  return chrome.extension.getBackgroundPage();
+}
+
+function retrieveCredentials() {
+  var auth = localStorage.getItem('convore.auth');
+  if( !auth ) {
+    var popupView = getPopupView();
+    if( popupView ) {
+      popupView.showLoginPage();
     }
-  });
-}
+  } else {
+    var authParts = auth.split(':');
+    var usr = authParts[0];
+    var pswd = authParts[1];
 
-function setMainContent() {
-  var view = getView('main.html');
-  //view.setContent('This is the content... yayyyy!');
-}
+    var authContext = {
+      username: usr,
+      password: pswd,
+      success: null,
+      error: null
+    };
 
-function createGroupElem(group) {
-  var groupElem = $('<div class="group"></div>');
-
-  groupElem.append('<img src="' + group.creator.img + '" title="' + group.creator.username + '"/>');
-  groupElem.append('<a href="javascript:void(0)" onClick="openInConvore(\'' + group.url + '\')">' + group.name + '</a>');
-  groupElem.append('<span class="topic">Topics: ' + group.topics_count + '</span>');
-
-  return groupElem;
-}
-
-function openInConvore(relativePath) {
-  var url = convrUrl + relativePath;
-  chrome.tabs.create({url: url}, function(tab) {});
-}
-
-function getView(htmlPage) {
-  var viewTabUrl = chrome.extension.getURL(htmlPage);
-
-  //Look through all the pages in this extension to find one we can use.
-  var views = chrome.extension.getViews();
-  for (var i = 0; i < views.length; i++) {
-    var view = views[i];
-    console.log( view + ' : ' + view.location.href );
-
-    //If this view has the right URL and hasn't been used yet...
-    if (view.location.href == viewTabUrl) {
-      return view;
-    }
+    return authContext;
   }
+}
+
+function persistCredentials(username, password) {
+  localStorage.setItem('convore.auth', username + ':' + password);
+}
+
+function validateCredentials(authContext) {
+  var verifyAccountUrl = convoreApiUrl + '/account/verify.json';
+  $.ajax({
+    url: verifyAccountUrl,
+    headers: {
+      Authorization: 'Basic ' + btoa(authContext.username + ':' + authContext.password)
+    },
+    success: function(data) {
+      console.log(data);
+      if( !data.error ) {
+        setupGlobalCreds(authContext.username, authContext.password);
+        persistCredentials(authContext.username, authContext.password);
+        if(authContext.success) {
+          authContext.success.call();
+        }
+      } else {
+        if(authContext.error) {
+          authContext.error.call();
+        }
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      if(authContext.error) {
+        authContext.error.call();
+      }
+      console.log('error: ' + errorThrown);
+    }
+  });
 }

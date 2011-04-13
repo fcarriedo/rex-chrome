@@ -5,9 +5,15 @@
   </head>
   <body>
     <script>
-      chrome.browserAction.setBadgeText({text: "3"});
-      console.log('initializing rex');
-      initRex();
+      var authContext = retrieveCredentials();
+      if( authContext ) {
+        authContext.success = initFeed;
+        validateCredentials(authContext);
+      }
+
+      function initFeed() {
+        console.log('Credentials verified and initializing feed.');
+      }
     </script>
   </body>
 </html>

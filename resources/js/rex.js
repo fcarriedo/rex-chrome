@@ -36,7 +36,8 @@ function listenToLiveFeed( callback ) {
   var url = convoreApiUrl + '/live.json';
   $.getJSON(url, function(data) {
     callback.call(this, data.messages);
-    listenToLiveFeed(callback); // Calls itself again ad infinitum. (Long polling encouraged [see api docs]).
+    // Calls itself again ad infinitum. (Long polling encouraged [see api docs]).
+    setTimeout(function() { listenToLiveFeed(callback); }, 0);
   });
 }
 

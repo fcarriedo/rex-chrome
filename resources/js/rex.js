@@ -32,6 +32,14 @@ function fetchMessages(topicId, callback) {
   });
 }
 
+function listenToLiveFeed( callback ) {
+  var url = convoreApiUrl + '/live.json';
+  $.getJSON(url, function(data) {
+    callback.call(this, data.messages);
+    listenToLiveFeed(callback); // Calls itself again ad infinitum. (Long polling encouraged [see api docs]).
+  });
+}
+
 /** ======================================
  *   Convore chrome utils
  *  ======================================
@@ -50,8 +58,8 @@ function openInConvore(relativePath) {
 function checkCredentials() {
   var popupView = getPopupView();
   if(popupView) {
-    var authContext = retrieveCredentials();
-    if( !authContext ) {
+    var authCtx = retrieveCredentials();
+    if( !authCtx ) {
       popupView.showLoginPage();
     } else {
       popupView.showFeed();
@@ -59,28 +67,29 @@ function checkCredentials() {
   }
 }
 
-function validateCredentials(authContext) {
+function validateCredentials(authCtx) {
   var verifyAccountUrl = convoreApiUrl + '/account/verify.json';
   $.ajax({
     url: verifyAccountUrl,
     headers: {
-      Authorization: 'Basic ' + btoa(authContext.username + ':' + authContext.password)
+      Authorization: 'Basic ' + btoa(authCtx.username + ':' + authCtx.password)
     },
     success: function(data) {
       if( !data.error ) {
-        setupGlobalCreds(authContext.username, authContext.password);
-        if(authContext.success) {
-          authContext.success.call();
+        persistCredentials(authCtx.username, authCtx.password);
+        setupGlobalCreds(authCtx.username, authCtx.password);
+        if(authCtx.success) {
+          authCtx.success.call();
         }
       } else {
-        if(authContext.error) {
-          authContext.error.call();
+        if(authCtx.error) {
+          authCtx.error.call();
         }
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      if(authContext.error) {
-        authContext.error.call();
+      if(authCtx.error) {
+        authCtx.error.call();
       }
       console.log('error: ' + errorThrown);
     }
@@ -99,14 +108,14 @@ function retrieveCredentials() {
     var usr = authParts[0];
     var pswd = authParts[1];
 
-    var authContext = {
+    var authCtx = {
       username: usr,
       password: pswd,
       success: null,
       error: null
     };
 
-    return authContext;
+    return authCtx;
   }
 }
 
@@ -124,9 +133,6 @@ function setupGlobalCreds(convoreUsr, convorePswd) {
     username: convoreUsr,
     password: convorePswd
   });
-
-  // Persist creds in the localStorage
-  persistCredentials(convoreUsr, convorePswd);
 }
 
 /** ======================================
@@ -149,6 +155,16 @@ var datastore = function(storage) {
   };
 }(localStorage);
 
+/** ======================================
+ *   Notification utils
+ *  ======================================
+ */
+
+function showSimpleNotification(title, body) {
+  var notification = webkitNotifications.createNotification('resources/images/rex.png', title, body);
+  notification.show();
+  setTimeout(function(){ notification.cancel(); }, 7000);
+}
 
 /** ======================================
  *   Chrome extension utils

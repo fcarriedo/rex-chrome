@@ -15,6 +15,7 @@
   "permissions": [
     "tabs",
     "background",
+    "notifications",
     "https://convore.com/api/*.json"
   ]
 }

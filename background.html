@@ -5,15 +5,65 @@
   </head>
   <body>
     <script>
-      var authContext = retrieveCredentials();
-      if( authContext ) {
-        authContext.success = initFeed;
-        //validateCredentials(authContext);
+      function startBgService() {
+        var authCtx = retrieveCredentials();
+        if( authCtx ) {
+          authCtx.success = initLiveFeed;
+          authCtx.error = retryLater;
+
+          validateCredentials(authCtx);
+        } else {
+          retryLater();
+        }
       }
 
-      function initFeed() {
+      function initLiveFeed() {
+        listenToLiveFeed( liveFeedObserver.notify );
         console.log('Credentials verified and initializing feed.');
       }
+
+      function retryLater() {
+        var retrySec = 30;
+        setTimeout(startBgService, retrySec*1000);
+        console.log('Couldnt auth. Retrying agin in ' + retrySec + ' seconds.');
+      }
+
+      var liveFeedObserver = function() {
+        var listeners = [];
+        return {
+          notify : function( data ) {
+            for(var i=0; i<listeners.length; i++ ) {
+              listeners[i].call(this, data);
+            }
+          },
+          addListener: function( callback ) {
+            listeners.push( callback );
+          }
+        };
+      }();
+
+      liveFeedObserver.addListener( function(messages) {
+        for(var i=0; i<messages.length; i++ ) {
+          var msg = messages[i];
+          if( msg.kind === 'logout') {
+            var body = '"' + msg.user.username + '" just logged out =(';
+            showSimpleNotification('logout', body);
+          }
+        }
+      });
+
+      liveFeedObserver.addListener( function(messages) {
+        for(var i=0; i<messages.length; i++ ) {
+          var msg = messages[i];
+          if( msg.kind === 'login') {
+            var body = '"' + msg.user.username + '" just logged in =)';
+            showSimpleNotification('login', body);
+          }
+        }
+      });
+
+      // Start the background service.
+      startBgService();
     </script>
   </body>
 </html>

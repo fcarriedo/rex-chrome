@@ -13,22 +13,24 @@
         var usr = $('#usr').val();
         var pswd = $('#pswd').val();
 
-        var authContext = {
+        var authCtx = {
           username: usr,
           password: pswd,
           success: function() {
             showFeed();
+            getBackgroundPage().startBgService();
           },
           error: function() {
             $('#login-err').text('Wrong credentials');
           }
         };
 
-        validateCredentials( authContext );
+        validateCredentials( authCtx );
       }
 
       function logout() {
         removeCredentials();
+        setupGlobalCreds(null, null);
         showLoginPage();
       }
 

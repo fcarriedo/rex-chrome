@@ -32,6 +32,7 @@
         var listeners = [];
         return {
           notify : function( data ) {
+            //console.log( JSON.stringify(data) );
             for(var i=0; i<listeners.length; i++ ) {
               listeners[i].call(this, data);
             }
@@ -42,22 +43,42 @@
         };
       }();
 
+      /* Messages listener */
       liveFeedObserver.addListener( function(messages) {
         for(var i=0; i<messages.length; i++ ) {
           var msg = messages[i];
-          if( msg.kind === 'logout') {
-            var body = '"' + msg.user.username + '" just logged out =(';
-            showSimpleNotification('logout', body);
+          if( msg.kind === 'direct-message') {
+            var title = 'Private message from ' +  msg.user.username;
+            var body = msg.message;
+            showSimpleNotification(title, body);
           }
         }
       });
 
+      /* Mentions listener */
       liveFeedObserver.addListener( function(messages) {
         for(var i=0; i<messages.length; i++ ) {
           var msg = messages[i];
-          if( msg.kind === 'login') {
-            var body = '"' + msg.user.username + '" just logged in =)';
-            showSimpleNotification('login', body);
+          if( msg.kind === 'message') {
+            // TODO(fcarriedo): Refactor. Expensive to create RegEx obj per msg.
+            var usrHandleRegex = new RegExp("(^|[^a-zA-Z])(@" + getUsername() + ")([^a-zA-Z]|$)", 'i');
+            if( usrHandleRegex.test(msg.message) ) {
+              var title = 'You got a new mention! (from: ' +  msg.user.username + ')';
+              var body = msg.message;
+              showSimpleNotification(title, body);
+            }
+          }
+        }
+      });
+
+      /* Topic listener */
+      liveFeedObserver.addListener( function(messages) {
+        for(var i=0; i<messages.length; i++ ) {
+          var msg = messages[i];
+          if( msg.kind === 'topic') {
+            var title = 'New topic created! ';
+            var body = msg.name;
+            showSimpleNotification(title, body);
           }
         }
       });

@@ -136,6 +136,13 @@ function setupGlobalCreds(convoreUsr, convorePswd) {
   });
 }
 
+function getUsername() {
+  var auth = datastore.get('convore.auth');
+  if( auth ) {
+    return auth.split(':')[0];
+  }
+}
+
 /** ======================================
  *   Persistence abstraction
 *    (implemented on localStorage)
@@ -164,7 +171,7 @@ var datastore = function(storage) {
 function showSimpleNotification(title, body) {
   var notification = webkitNotifications.createNotification('resources/images/rex.png', title, body);
   notification.show();
-  setTimeout(function(){ notification.cancel(); }, 7000);
+  setTimeout(function(){ notification.cancel(); }, 15000);
 }
 
 /** ======================================

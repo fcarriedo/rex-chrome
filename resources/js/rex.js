@@ -73,9 +73,8 @@ function validateCredentials(authCtx) {
   var verifyAccountUrl = convoreApiUrl + '/account/verify.json';
   $.ajax({
     url: verifyAccountUrl,
-    headers: {
-      Authorization: 'Basic ' + btoa(authCtx.username + ':' + authCtx.password)
-    },
+    username: authCtx.username,
+    password: authCtx.password,
     success: function(data) {
       if( !data.error ) {
         persistCredentials(authCtx.username, authCtx.password);

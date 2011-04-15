@@ -3,6 +3,7 @@
     <link rel="stylesheet" href="resources/css/rex.css" type="text/css"/>
     <script src='resources/js/jquery.min.js'></script>
     <script src='resources/js/jquery.tmpl.min.js'></script>
+    <script src='resources/js/jquery.scrollTo-min.js'></script>
     <script src='resources/js/underscore-min.js'></script>
     <script src='resources/js/backbone-min.js'></script>
     <script src='resources/js/rex.js'></script>
@@ -19,7 +20,7 @@
           username: usr,
           password: pswd,
           success: function() {
-            showFeed();
+            showMainPane();
             getBackgroundPage().startBgService();
           },
           error: function() {
@@ -37,13 +38,13 @@
       }
 
       function showLoginPage() {
-        $('#feed').hide();
+        $('#groups-pane').hide();
         $('#login').fadeIn();
       }
 
-      function showFeed() {
+      function showMainPane() {
         $('#login').hide();
-        $('#feed').fadeIn();
+        $('#groups-pane').fadeIn();
         fetchGroups(renderGroups);
       }
 
@@ -72,7 +73,7 @@
       </table>
     </div>
 
-    <div id="feed">
+    <div id="groups-pane">
       <div id='convore-content'><span id='loading'>Loading...</span></div>
       <h5><a href='#' onClick='logout()'>logout</a></h5>
     </div>

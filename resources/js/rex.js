@@ -64,7 +64,7 @@ function checkCredentials() {
     if( !authCtx ) {
       popupView.showLoginPage();
     } else {
-      popupView.showFeed();
+      popupView.showMainPane();
     }
   }
 }

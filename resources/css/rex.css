@@ -3,7 +3,6 @@ body {
   padding: 0px;
   font-family: sans-serif;
   width: 350px;
-  max-height: 300px;
   background-image: -webkit-gradient(
     linear,
     left top,
@@ -41,17 +40,18 @@ div#subtitle {
   letter-spacing: 1px;
 }
 
-div#feed span#loading {
+div#groups-pane span#loading {
   font-size: 70%;
   color: #aaa;
 }
 
 div.group {
   font-size: 85%;
-  background-color: lightblue;
-  border: 1px solid royalblue;
+  border-radius: 2px;
   padding: 5px;
   margin: 5px;
+  border: 1px solid #888;
+  background-color: #efefef;
 }
 
 div.group img {

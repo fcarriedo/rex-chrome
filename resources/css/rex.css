@@ -1,6 +1,38 @@
 body {
+  margin: 0px;
+  padding: 0px;
   font-family: sans-serif;
   width: 350px;
+  max-height: 300px;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right bottom,
+    color-stop(0.05, rgb(255,255,255)),
+    color-stop(0.53, rgb(216,216,232)),
+    color-stop(0.77, rgb(220,220,224))
+  );
+}
+
+div#header {
+  color: white;
+  text-shadow: 2px 2px 2px #000;
+  -webkit-box-shadow: 0px 3px 15px #888;
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.05, rgb(10,10,10)),
+    color-stop(0.53, rgb(29,29,31)),
+    color-stop(0.77, rgb(43,42,51))
+  );
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 15px;
+}
+
+h1 {
+  margin: 0px;
 }
 
 div#subtitle {

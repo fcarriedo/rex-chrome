@@ -47,6 +47,7 @@ function listenToLiveFeed( callback ) {
  */
 function openInConvore(relativePath) {
   var url = convoreUrl + relativePath;
+  // TODO(fcarriedo): Search open tabs, open in existing 'convore' (if).
   chrome.tabs.create({url: url}, function(tab) {});
 }
 

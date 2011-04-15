@@ -7,7 +7,9 @@
     <script src='resources/js/backbone-min.js'></script>
     <script src='resources/js/rex.js'></script>
     <script>
-      $(document).ready( initRex() );
+      $(document).ready(function() {
+        setTimeout(initRex, 50); // To show a 'loading' msg while loading main content.
+      });
 
       function login() {
         var usr = $('#usr').val();
@@ -21,7 +23,7 @@
             getBackgroundPage().startBgService();
           },
           error: function() {
-            $('#login-err').text('Wrong credentials');
+            showLoginError();
           }
         };
 
@@ -45,6 +47,11 @@
         fetchGroups(renderGroups);
       }
 
+      function showLoginError() {
+        $('#login-err').text('Wrong credentials');
+        setTimeout(function() {$('#login-err').text('');}, 7000);
+      }
+
       function renderGroups( groups ) {
         $('#convore-content').html( $('#groups-tmpl').tmpl(groups) );
       }
@@ -52,25 +59,27 @@
   </head>
   <body>
     <h2><img src='resources/images/rex.png' title='rex'/> rex</h2>
+    <div id='subtitle'>(A Convore Chrome Extension)</div><br/>
 
-    <div id='login'>
+    <div id='login' style='display: none'>
+      <div id='login-err' class='error'></div>
       <table>
         <tr><td>Username:</td><td><input id='usr' type='text'/></td></tr>
         <tr><td>Password:</td><td><input id='pswd' type='password'/></td></tr>
         <tr><td colspan='2'><button onClick='login()'>Login</button></td></tr>
       </table>
-      <div id='login-err'></div>
     </div>
 
-    <div id="feed" style='display: none'>
-      <div id='subtitle'>(a Convore extension)</div><br/>
-      <div id='convore-content'>Loading...</div>
-
+    <div id="feed">
+      <div id='convore-content'><span id='loading'>Loading...</span></div>
       <h5><a href='#' onClick='logout()'>logout</a></h5>
     </div>
 
 
 
+    <!-- jQuery template definitions (groups, topics, messages, users, etc.) -->
+
+    <!-- Groups template -->
     <script id='groups-tmpl' type=text/x-jquery-tmpl'>
       <div class='group'>
         <img src='${creator.img}' title='${creator.username}'/>
@@ -79,6 +88,23 @@
       </div>
     </script>
 
-    <script>initRex();</script>
+    <!-- Topics template -->
+    <script id='topic-tmpl' type=text/x-jquery-tmpl'>
+      <div class='topic'>
+      </div>
+    </script>
+
+    <!-- Messages template -->
+    <script id='message-tmpl' type=text/x-jquery-tmpl'>
+      <div class='message'>
+      </div>
+    </script>
+
+    <!-- Users template -->
+    <script id='user-tmpl' type=text/x-jquery-tmpl'>
+      <div class='user'>
+      </div>
+    </script>
+
   </body>
 </html>

@@ -5,8 +5,13 @@ body {
 
 div#subtitle {
   color: #999;
-  font-size: 65%;
-  letter-spacing: 2px;
+  font-size: 75%;
+  letter-spacing: 1px;
+}
+
+div#feed span#loading {
+  font-size: 70%;
+  color: #aaa;
 }
 
 div.group {
@@ -23,4 +28,12 @@ div.group img {
 
 .topic {
   font-size: 65%;
+}
+
+div#login-err {
+  font-size: 70%;
+}
+
+.error {
+  color: red;
 }

@@ -37,13 +37,13 @@
       }
 
       function showLoginPage() {
-        $('#groups-pane').hide();
+        $('#content-pane').hide();
         $('#login').fadeIn();
       }
 
       function showMainPane() {
         $('#login').hide();
-        $('#groups-pane').fadeIn();
+        $('#content-pane').fadeIn();
         fetchGroups(function(groups) {
           $('#groups-content').html( $('#group-tmpl').tmpl(groups) );
         });

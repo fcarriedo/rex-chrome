@@ -92,19 +92,14 @@ div.topic {
 
 div.message {
   font-size: 70%;
-  border-radius: 2px;
   padding: 5px;
-  margin: 5px;
+  margin: -1px 5px 0px 5px;
   border: 1px solid #888;
   background-color: #efefef;
 }
 
 div.group img {
   width: 24px;
-}
-
-.topic {
-  font-size: 65%;
 }
 
 div#login-err {
@@ -119,4 +114,21 @@ div#content-pane .clickable {
   cursor: hand;
   background-color: #CCCCFF;
   border: 1px solid #333;
+}
+
+div#content-pane a.back {
+  text-decoration: none;
+  border: 1px solid #103a87;
+  font-size: 75%;
+  color: white;
+  text-shadow: 1px 1px 1px #333;
+  padding: 3px;
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.01, rgb(65,101,164)),
+    color-stop(0.51, rgb(91,132,197)),
+    color-stop(0.76, rgb(119,159,237))
+  );
 }

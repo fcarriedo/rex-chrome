@@ -81,6 +81,10 @@
         });
       }
 
+      function scrollBack() {
+        $('#content-pane').animate({"left": "+=350px"}, "normal");
+      }
+
     </script>
   </head>
   <body>
@@ -108,14 +112,16 @@
 
       <!-- Topics pane -->
       <div id="topics-pane" onClick='slideTo()'>
-        Topics pane
+        <a href='#' onClick='scrollBack()' class='back'>&lt; Back to groups</a><br/><br/>
+        Topics:
         <div id='topics-content'><span class='loading'>Loading...</span></div>
         <h5><a href='#' onClick='logout()'>logout</a></h5>
       </div>
 
       <!-- messages pane -->
       <div id="messages-pane">
-        Messages pane
+        <a href='#' onClick='scrollBack()' class='back'>&lt; Back to topics</a><br/><br/>
+        Messages:<br/><br/>
         <div id='messages-content'><span class='loading'>Loading...</span></div>
         <h5><a href='#' onClick='logout()'>logout</a></h5>
       </div>
@@ -128,7 +134,7 @@
 
     <!-- Groups template -->
     <script id='group-tmpl' type=text/x-jquery-tmpl'>
-      <div class='group' onClick='slideToTopics( ${id} )'>
+      <div id='group-${id}' class='group' onClick='slideToTopics( ${id} )'>
         <img src='${creator.img}' title='${creator.username}'/>
         <a href='#' onClick='openInConvore("${url}")'>${name}</a>
         <span class='topic'> Topics: ${topics_count} </span>
@@ -137,14 +143,14 @@
 
     <!-- Topics template -->
     <script id='topic-tmpl' type=text/x-jquery-tmpl'>
-      <div class='topic' onClick='slideToMessages( ${id} )'>
+      <div id='topic-${id}' class='topic' onClick='slideToMessages( ${id} )'>
         ${name} - <i class='loading'>by ${creator.username} - Total messages: ${message_count} - <b>${unread}</b> unread</i>
       </div>
     </script>
 
     <!-- Messages template -->
     <script id='message-tmpl' type=text/x-jquery-tmpl'>
-      <div class='message'>
+      <div id='message-${id}' class='message'>
         ${message} - <i class='loading'>by ${user.username}</i>
       </div>
     </script>

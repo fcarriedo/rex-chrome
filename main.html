@@ -9,6 +9,15 @@
     <script>
       $(document).ready(function() {
         setTimeout(initRex, 50); // To show a 'loading' msg while loading main content.
+
+        $('div.group, div.topic').live('mouseover mouseout', function(event) {
+          if (event.type == 'mouseover') {
+            $(this).addClass('clickable');
+          } else {
+            $(this).removeClass('clickable');
+          }
+        });
+
       });
 
       function login() {

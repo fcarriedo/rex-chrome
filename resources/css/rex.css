@@ -114,3 +114,9 @@ div#login-err {
 .error {
   color: red;
 }
+
+div#content-pane .clickable {
+  cursor: hand;
+  background-color: #CCCCFF;
+  border: 1px solid #333;
+}

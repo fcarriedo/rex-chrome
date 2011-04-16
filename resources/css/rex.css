@@ -40,13 +40,58 @@ div#subtitle {
   letter-spacing: 1px;
 }
 
-div#groups-pane span#loading {
-  font-size: 70%;
+div#content-pane {
+  width: 1050px;
+  overflow: hide;
+  position: relative;
+}
+
+div#groups-pane {
+  width: 350px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+div#topics-pane {
+  width: 350px;
+  position: absolute;
+  top: 0px;
+  left: 350px;
+}
+
+div#messages-pane {
+  width: 350px;
+  position: absolute;
+  top: 0px;
+  left: 700px;
+}
+
+.loading {
+  font-size: 80%;
   color: #aaa;
 }
 
 div.group {
   font-size: 85%;
+  border-radius: 2px;
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid #888;
+  background-color: #efefef;
+}
+
+div.topic {
+  font-size: 70%;
+  border-radius: 2px;
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid #888;
+  background-color: #efefef;
+}
+
+div.message {
+  font-size: 70%;
   border-radius: 2px;
   padding: 5px;
   margin: 5px;

@@ -3,7 +3,6 @@
     <link rel="stylesheet" href="resources/css/rex.css" type="text/css"/>
     <script src='resources/js/jquery.min.js'></script>
     <script src='resources/js/jquery.tmpl.min.js'></script>
-    <script src='resources/js/jquery.scrollTo-min.js'></script>
     <script src='resources/js/underscore-min.js'></script>
     <script src='resources/js/backbone-min.js'></script>
     <script src='resources/js/rex.js'></script>
@@ -45,7 +44,9 @@
       function showMainPane() {
         $('#login').hide();
         $('#groups-pane').fadeIn();
-        fetchGroups(renderGroups);
+        fetchGroups(function(groups) {
+          $('#groups-content').html( $('#group-tmpl').tmpl(groups) );
+        });
       }
 
       function showLoginError() {
@@ -53,9 +54,24 @@
         setTimeout(function() {$('#login-err').text('');}, 7000);
       }
 
-      function renderGroups( groups ) {
-        $('#convore-content').html( $('#groups-tmpl').tmpl(groups) );
+
+
+      // TODO(fcarriedo): Do a $('#container').scrollTo('#id');
+      // Slide to
+      function slideToTopics(groupId) {
+        $('#content-pane').animate({"left": "-=350px"}, "normal");
+        fetchTopics( groupId , function(topics) {
+          $('#topics-content').html( $('#topic-tmpl').tmpl(topics) );
+        });
       }
+
+      function slideToMessages(topicId) {
+        $('#content-pane').animate({"left": "-=350px"}, "normal");
+        fetchMessages( topicId , function(messages) {
+          $('#messages-content').html( $('#message-tmpl').tmpl(messages) );
+        });
+      }
+
     </script>
   </head>
   <body>
@@ -73,9 +89,28 @@
       </table>
     </div>
 
-    <div id="groups-pane">
-      <div id='convore-content'><span id='loading'>Loading...</span></div>
-      <h5><a href='#' onClick='logout()'>logout</a></h5>
+    <div id='content-pane'>
+
+      <!-- Groups pane -->
+      <div id="groups-pane">
+        <div id='groups-content'><span class='loading'>Loading...</span></div>
+        <h5><a href='#' onClick='logout()'>logout</a></h5>
+      </div>
+
+      <!-- Topics pane -->
+      <div id="topics-pane" onClick='slideTo()'>
+        Topics pane
+        <div id='topics-content'><span class='loading'>Loading...</span></div>
+        <h5><a href='#' onClick='logout()'>logout</a></h5>
+      </div>
+
+      <!-- messages pane -->
+      <div id="messages-pane">
+        Messages pane
+        <div id='messages-content'><span class='loading'>Loading...</span></div>
+        <h5><a href='#' onClick='logout()'>logout</a></h5>
+      </div>
+
     </div>
 
 
@@ -83,8 +118,8 @@
     <!-- jQuery template definitions (groups, topics, messages, users, etc.) -->
 
     <!-- Groups template -->
-    <script id='groups-tmpl' type=text/x-jquery-tmpl'>
-      <div class='group'>
+    <script id='group-tmpl' type=text/x-jquery-tmpl'>
+      <div class='group' onClick='slideToTopics( ${id} )'>
         <img src='${creator.img}' title='${creator.username}'/>
         <a href='#' onClick='openInConvore("${url}")'>${name}</a>
         <span class='topic'> Topics: ${topics_count} </span>
@@ -93,13 +128,15 @@
 
     <!-- Topics template -->
     <script id='topic-tmpl' type=text/x-jquery-tmpl'>
-      <div class='topic'>
+      <div class='topic' onClick='slideToMessages( ${id} )'>
+        ${name} - <i class='loading'>by ${creator.username} - Total messages: ${message_count} - <b>${unread}</b> unread</i>
       </div>
     </script>
 
     <!-- Messages template -->
     <script id='message-tmpl' type=text/x-jquery-tmpl'>
       <div class='message'>
+        ${message} - <i class='loading'>by ${user.username}</i>
       </div>
     </script>
 

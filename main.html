@@ -136,7 +136,7 @@
     <script id='group-tmpl' type=text/x-jquery-tmpl'>
       <div id='group-${id}' class='group' onClick='slideToTopics( ${id} )'>
         <img src='${creator.img}' title='${creator.username}'/>
-        <a href='#' onClick='openInConvore("${url}")'>${name}</a>
+        <b><a href='#' onClick='openInConvore("${url}")'>${name}</a></b>
         <span class='topic'> Topics: ${topics_count} </span>
       </div>
     </script>
@@ -144,7 +144,7 @@
     <!-- Topics template -->
     <script id='topic-tmpl' type=text/x-jquery-tmpl'>
       <div id='topic-${id}' class='topic' onClick='slideToMessages( ${id} )'>
-        ${name} - <i class='loading'>by ${creator.username} - Total messages: ${message_count} - <b>${unread}</b> unread</i>
+        <b>${name}</b> - <i class='loading'>by ${creator.username} - Total messages: ${message_count} - <b>${unread}</b> unread</i>
       </div>
     </script>
 

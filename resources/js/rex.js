@@ -48,9 +48,36 @@ function listenToLiveFeed( callback ) {
 function openInConvore(relativePath) {
   var url = convoreUrl + relativePath;
   // TODO(fcarriedo): Search open tabs, open in existing 'convore' (if).
+  openInNewTab(url);
+}
+
+/** ======================================
+ *   General utils
+ *  ======================================
+ */
+
+function openInNewTab(url) {
   chrome.tabs.create({url: url}, function(tab) {});
 }
 
+var linkUtils = function() {
+  var urlRegex = /(http(s?):\/\/[^\s"')]+)/gi;
+  return {
+    linkify: function(str) {
+      var matchArray;
+      var urls = [];
+      while( (matchArray = urlRegex.exec(str) ) != null ) {
+        urls.push( matchArray[0] );
+      }
+
+      for( var i=0; i<urls.length; i++ ) {
+        str = str.replace(urls[i], "<a href='#' onClick=\"openInNewTab('" + urls[i] + "')\">" + urls[i] + "</a>");
+      }
+
+      return str;
+    }
+  };
+}();
 
 /** ======================================
  *   Authentication

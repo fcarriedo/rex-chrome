@@ -61,9 +61,15 @@ function openInNewTab(url) {
 }
 
 var linkUtils = function() {
-  var urlRegex = /(http(s?):\/\/[^\s"')]+)/gi;
-  var usrHandleRegex = /@[^\s'")?!*\.]+/gi;
+
+  // URLs regex.
+  var urlRegex = /(http(s?):\/\/[^\s"'!*`\[\]()<>{}]+)/gi;
+  // User handle regex.
+  var usrHandleRegex = /@([a-z]|[0-9]|[_])+/gi;
+
   return {
+
+    /* Linkifys URLs and user passwords. */
     linkify: function(str) {
       var matchArray;
 
@@ -83,7 +89,7 @@ var linkUtils = function() {
       }
       for( var i=0; i<usrHandles.length; i++ ) {
         var convoreUsrPath = '/users/' + usrHandles[i].substring(1);
-        str = str.replace(usrHandles[i], "<a href='#' onClick=\"openInConvore('" + convoreUsrPath + "')\">" + usrHandles[i] + "</a>");
+        str = str.replace(new RegExp(usrHandles[i], 'gi'), "<a href='#' onClick=\"openInConvore('" + convoreUsrPath + "')\">" + usrHandles[i] + "</a>");
       }
 
       return str;

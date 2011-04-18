@@ -81,7 +81,6 @@
 
           // We linkify all rendered messages.
           $('#messages-content div.message').each( function(index) {
-            console.log( $(this).html() );
             $(this).html( linkUtils.linkify( $(this).html() ) );
           });
         });

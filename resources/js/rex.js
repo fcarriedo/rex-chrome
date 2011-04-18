@@ -62,16 +62,28 @@ function openInNewTab(url) {
 
 var linkUtils = function() {
   var urlRegex = /(http(s?):\/\/[^\s"')]+)/gi;
+  var usrHandleRegex = /@[^\s'")?!*\.]+/gi;
   return {
     linkify: function(str) {
       var matchArray;
+
+      // Linkify all URLs.
       var urls = [];
       while( (matchArray = urlRegex.exec(str) ) != null ) {
         urls.push( matchArray[0] );
       }
-
       for( var i=0; i<urls.length; i++ ) {
         str = str.replace(urls[i], "<a href='#' onClick=\"openInNewTab('" + urls[i] + "')\">" + urls[i] + "</a>");
+      }
+
+      // Linkify all user handles (eg. @username)
+      var usrHandles = [];
+      while( (matchArray = usrHandleRegex.exec(str) ) != null ) {
+        usrHandles.push( matchArray[0] );
+      }
+      for( var i=0; i<usrHandles.length; i++ ) {
+        var convoreUsrPath = '/users/' + usrHandles[i].substring(1);
+        str = str.replace(usrHandles[i], "<a href='#' onClick=\"openInConvore('" + convoreUsrPath + "')\">" + usrHandles[i] + "</a>");
       }
 
       return str;

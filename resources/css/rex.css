@@ -2,7 +2,7 @@ body {
   margin: 0px;
   padding: 0px;
   font-family: helvetica, arial, freesans, clean, sans-serif;
-  color: #222;
+  color: #333;
   width: 350px;
   background-image: -webkit-gradient(
     linear,
@@ -14,10 +14,10 @@ body {
   );
 }
 
-div#header {
+#header {
   color: white;
-  text-shadow: 2px 2px 2px #000;
-  -webkit-box-shadow: 0px 3px 15px #888;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
   background-image: -webkit-gradient(
     linear,
     left bottom,
@@ -26,20 +26,46 @@ div#header {
     color-stop(0.53, rgb(29,29,31)),
     color-stop(0.77, rgb(43,42,51))
   );
-  width: 100%;
-  padding: 5px;
-  margin-bottom: 15px;
+  -webkit-box-shadow: 0px 3px 15px #888;
 }
-
-h1 {
-  margin: 0px;
+#header > div {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  padding: 1px;
 }
-
-div#subtitle {
-  color: #999;
+#header #notifications-pane {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-pack: end;
+  -webkit-box-flex: 1;
+}
+#header .shadow-text {
+  text-shadow: 2px 2px 2px #000;
+}
+div.badge {
+  position: relative;
+  margin: 5px 10px 0px 0px;
+}
+div.badge div.badge-text {
+  background-color: darkred;
+  padding: 1px;
+  margin: -3px;
+  border: 1px solid #eee;
+  position: absolute;
+  font-size: 6pt;
+  font-family: monospace;
+  top: 0px;
+  right: 0px;
+}
+#header #header-bottom {
   font-size: 75%;
-  letter-spacing: 1px;
 }
+#header #logout {
+  text-align: right;
+  -webkit-box-flex: 1;
+}
+
+
 
 div#content-pane {
   width: 1050px;

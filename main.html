@@ -47,12 +47,17 @@
 
       function showLoginPage() {
         $('#content-pane').hide();
+        $('#notifications-pane').hide();
         $('#login').fadeIn();
+        $('#logout').hide();
       }
 
       function showMainPane() {
+        clearLoginForm();
         $('#login').hide();
         $('#content-pane').fadeIn();
+        $('#notifications-pane').fadeIn();
+        $('#logout').fadeIn();
         fetchGroups(function(groups) {
           $('#groups-content').html( $('#group-tmpl').tmpl(groups) );
         });
@@ -61,6 +66,11 @@
       function showLoginError() {
         $('#login-err').text('Wrong credentials');
         setTimeout(function() {$('#login-err').text('');}, 7000);
+      }
+
+      function clearLoginForm() {
+        $('#usr').val('');
+        $('#pswd').val('');
       }
 
 
@@ -93,11 +103,33 @@
     </script>
   </head>
   <body>
-    <div id='header'>
-      <h1><img src='resources/images/rex.png' title='rex'/> rex</h1>
-      <div id='subtitle'>(A Convore Chrome Extension)</div>
+
+    <!-- Header section -->
+    <div id="header">
+      <div id="header-top">
+        <div id="header-logo">
+          <h1 class='shadow-text'><img src='resources/images/rex.png' title='rex'/> rex</h1>
+        </div>
+        <div id="notifications-pane">
+          <div class="badge">
+            <div id='mentions-badge-text' class="badge-text">15</div>
+            <a href='#' onClick='openInConvore("/mentions")' title='mentions'><img src='resources/images/mention.png'></a>
+          </div>
+          <div class="badge">
+            <div id='messages-badge-text' class="badge-text">7</div>
+            <a href='#' onClick='openInConvore("/messages")' title='messages'><img src='resources/images/message.png' title='messages'></a>
+          </div>
+        </div>
+      </div>
+      <div id="header-bottom">
+        <div id="subtitle" class='shadow-text'>(A Convore Chrome Extension)</div>
+        <div id="logout" style='display: none'><a href='#' onClick='logout()'>logout</a></div>
+      </div>
     </div>
 
+    <br/>
+
+    <!-- Login pane -->
     <div id='login' style='display: none'>
       <div id='login-err' class='error'></div>
       <table>
@@ -107,12 +139,12 @@
       </table>
     </div>
 
+    <!-- Main content pane -->
     <div id='content-pane'>
 
       <!-- Groups pane -->
       <div id="groups-pane">
         <div id='groups-content'><span class='loading'>Loading...</span></div>
-        <h5><a href='#' onClick='logout()'>logout</a></h5>
       </div>
 
       <!-- Topics pane -->
@@ -120,7 +152,6 @@
         <a href='#' onClick='scrollBack()' class='back'>&lt; Back to groups</a><br/><br/>
         Topics:
         <div id='topics-content'><span class='loading'>Loading...</span></div>
-        <h5><a href='#' onClick='logout()'>logout</a></h5>
       </div>
 
       <!-- messages pane -->
@@ -128,7 +159,6 @@
         <a href='#' onClick='scrollBack()' class='back'>&lt; Back to topics</a><br/><br/>
         Messages:<br/><br/>
         <div id='messages-content'><span class='loading'>Loading...</span></div>
-        <h5><a href='#' onClick='logout()'>logout</a></h5>
       </div>
 
     </div>

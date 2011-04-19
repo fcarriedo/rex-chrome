@@ -2,6 +2,7 @@ body {
   margin: 0px;
   padding: 0px;
   font-family: helvetica, arial, freesans, clean, sans-serif;
+  color: #222;
   width: 350px;
   background-image: -webkit-gradient(
     linear,
@@ -48,6 +49,8 @@ div#content-pane {
 
 div#groups-pane {
   width: 350px;
+  height: 450px;
+  overflow: auto;
   position: absolute;
   top: 0px;
   left: 0px;
@@ -55,6 +58,8 @@ div#groups-pane {
 
 div#topics-pane {
   width: 350px;
+  height: 450px;
+  overflow: auto;
   position: absolute;
   top: 0px;
   left: 350px;
@@ -62,6 +67,8 @@ div#topics-pane {
 
 div#messages-pane {
   width: 350px;
+  height: 450px;
+  overflow: auto;
   position: absolute;
   top: 0px;
   left: 700px;

@@ -48,8 +48,8 @@
         for(var i=0; i<messages.length; i++ ) {
           var msg = messages[i];
           if( msg.kind === 'direct-message') {
-            var title = 'Private message from ' +  msg.user.username;
-            var body = msg.message;
+            var title = 'New Private Message';
+            var body = '"' + msg.message + '" - ' + msg.user.username;
             showSimpleNotification(title, body);
           }
         }
@@ -63,8 +63,8 @@
             // TODO(fcarriedo): Refactor. Expensive to create RegEx obj per msg.
             var usrHandleRegex = new RegExp("(^|[^a-zA-Z])(@" + getUsername() + ")([^a-zA-Z]|$)", 'i');
             if( usrHandleRegex.test(msg.message) ) {
-              var title = 'You got a new mention! (from: ' +  msg.user.username + ')';
-              var body = msg.message;
+              var title = 'New Mention';
+              var body = '"' + msg.message + '" - ' +  msg.user.username;
               showSimpleNotification(title, body);
             }
           }
@@ -76,8 +76,8 @@
         for(var i=0; i<messages.length; i++ ) {
           var msg = messages[i];
           if( msg.kind === 'topic') {
-            var title = 'New topic created! ';
-            var body = msg.name;
+            var title = 'New Topic Created';
+            var body = '"' + msg.name + '"';
             showSimpleNotification(title, body);
           }
         }

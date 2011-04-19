@@ -62,8 +62,9 @@ function openInNewTab(url) {
 
 var linkUtils = function() {
 
+  // TODO(fcarriedo): Should we capture www.domain.com as URLs also? regex: ((http(s?):\/\/|www\.)[^\s"'*`\[\]()<>{}]+([^\s\.!?"'*`\[\]()<>{}]))
   // URLs regex.
-  var urlRegex = /(http(s?):\/\/[^\s"'!*`\[\]()<>{}]+)/gi;
+  var urlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+([^\s\.!?"'*`\[\]()<>{}]))/gi;
   // User handle regex.
   var usrHandleRegex = /@([a-z]|[0-9]|[_])+/gi;
 

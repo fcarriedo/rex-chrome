@@ -50,7 +50,8 @@
           if( msg.kind === 'direct-message') {
             var title = 'New Private Message';
             var body = '"' + msg.message + '" - ' + msg.user.username;
-            showSimpleNotification(title, body);
+            var url = '/messages/' + msg.user.username;
+            showSimpleNotification(url, title, body);
             badgeUtils.addUnreadPrivateMessage();
           }
         }
@@ -66,7 +67,8 @@
             if( usrHandleRegex.test(msg.message) ) {
               var title = 'New Mention';
               var body = '"' + msg.message + '" - ' +  msg.user.username;
-              showSimpleNotification(title, body);
+              var url = '/mentions';
+              showSimpleNotification(url, title, body);
               badgeUtils.addUnreadMention();
             }
           }
@@ -80,7 +82,8 @@
           if( msg.kind === 'topic') {
             var title = 'New Topic Created';
             var body = '"' + msg.name + '"';
-            showSimpleNotification(title, body);
+            var url = msg.url;
+            showSimpleNotification(url, title, body);
           }
         }
       });

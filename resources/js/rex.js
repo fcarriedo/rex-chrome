@@ -232,3 +232,49 @@ function getPopupView() {
 function getBackgroundPage() {
   return chrome.extension.getBackgroundPage();
 }
+
+/* Since there seems that there is no way to get the badge text,
+*  we're going to have to manage the badge state by ourselves.
+*/
+var badgeUtils = function() {
+  var badgeText = '';
+
+  // TODO(fcarriedo): Customize badge background color.
+  //chrome.browserAction.setBadgeBackgroundColor({color: [255, 0, 0, 100]});
+
+  function setBadgeText( txt ) {
+    chrome.browserAction.setBadgeText({text: badgeText});
+  }
+
+  function clearBadgeText( ) {
+    chrome.browserAction.setBadgeText({text: ''});
+  }
+
+  return {
+    addUnreadMention: function() {
+      if( badgeText !== '@|m' ) {
+        if(badgeText === '') {
+          badgeText = '@';
+        }else if(badgeText === 'm') {
+          badgeText = '@|m';
+        }
+
+        setBadgeText( badgeText );
+      }
+    },
+    addUnreadPrivateMessage: function() {
+      if( badgeText !== '@|m' ) {
+        if(badgeText === '') {
+          badgeText = 'm';
+        }else if(badgeText === '@') {
+          badgeText = '@|m';
+        }
+
+        setBadgeText( badgeText );
+      }
+    },
+    clearBadge: function() {
+      clearBadgeText();
+    }
+  };
+}();

@@ -51,6 +51,7 @@
             var title = 'New Private Message';
             var body = '"' + msg.message + '" - ' + msg.user.username;
             showSimpleNotification(title, body);
+            badgeUtils.addUnreadPrivateMessage();
           }
         }
       });
@@ -66,6 +67,7 @@
               var title = 'New Mention';
               var body = '"' + msg.message + '" - ' +  msg.user.username;
               showSimpleNotification(title, body);
+              badgeUtils.addUnreadMention();
             }
           }
         }

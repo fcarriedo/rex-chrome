@@ -3,8 +3,6 @@
     <link rel="stylesheet" href="resources/css/rex.css" type="text/css"/>
     <script src='resources/js/jquery.min.js'></script>
     <script src='resources/js/jquery.tmpl.min.js'></script>
-    <script src='resources/js/underscore-min.js'></script>
-    <script src='resources/js/backbone-min.js'></script>
     <script src='resources/js/rex.js'></script>
     <script>
       $(document).ready(function() {
@@ -18,6 +16,7 @@
           }
         });
 
+        keyboardActions.initBindings();
       });
 
       function login() {
@@ -100,6 +99,94 @@
         $('#content-pane').animate({"left": "+=350px"}, "normal");
       }
 
+     /** ======================================
+      *   Keyboard bindings
+      *  ======================================
+      */
+
+      var keyboardActions = function() {
+        var keyMap = {
+          up: 38, down: 40, left: 37, right: 39, help: 63,
+          h: 104, j: 106, k: 107, l: 108, r: 114, o: 111
+        };
+
+        function down(evt) {
+          console.log('going down..!');
+        }
+
+        function up(evt) {
+          console.log('going up..!');
+        }
+
+        function left(evt) {
+          console.log('going left..!');
+        }
+
+        function right(evt) {
+          console.log('going right');
+        }
+
+        function reply(evt) {
+          console.log('replying to comment');
+        }
+
+        function open(evt) {
+          console.log('opening in convore site');
+        }
+
+        function help(evt) {
+          console.log('asking for help');
+        }
+
+        return {
+
+          initBindings: function() {
+
+            $(document).keypress(function(evt) {
+              var keyCode = evt.which;
+
+              switch(keyCode) {
+
+                case keyMap.down:
+                case keyMap.j:
+                  down(evt);
+                  break;
+
+                case keyMap.up:
+                case keyMap.k:
+                  up(evt);
+                  break;
+
+                case keyMap.left:
+                case keyMap.h:
+                  left(evt);
+                  break;
+
+                case keyMap.right:
+                case keyMap.l:
+                  right(evt);
+                  break;
+
+                case keyMap.r:
+                  reply(evt);
+                  break;
+
+                case keyMap.o:
+                  open(evt);
+                  break;
+
+                case keyMap.help: // '?'
+                  help(evt);
+                  break;
+
+                default:
+                  break;
+
+              }
+            });
+          }
+        };
+      }();
     </script>
   </head>
   <body>

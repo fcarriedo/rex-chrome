@@ -105,10 +105,17 @@
       */
 
       var keyboardActions = function() {
+
         var keyMap = {
           up: 38, down: 40, left: 37, right: 39, help: 63,
-          h: 104, j: 106, k: 107, l: 108, r: 114, o: 111
+          h: 104, j: 106, k: 107, l: 108, m: 109, r: 114, o: 111
         };
+
+        var modes = {
+          groups: 'groups', topics: 'topics', messages: 'messages'
+        };
+
+        var currentMode = modes.groups; // Default mode: groups.
 
         function down(evt) {
           console.log('going down..!');
@@ -127,7 +134,15 @@
         }
 
         function reply(evt) {
-          console.log('replying to comment');
+          if(currentMode === modes.messages) {
+            console.log('Prefilling msg txtarea with @usrhandle and focus');
+          }
+        }
+
+        function message(evt) {
+          if(currentMode === modes.messages) {
+            console.log('Focusing on message text are');
+          }
         }
 
         function open(evt) {
@@ -139,6 +154,12 @@
         }
 
         return {
+
+          modes: modes,
+
+          setMode: function(newMode) {
+            currentMode = newMode;
+          },
 
           initBindings: function() {
 
@@ -169,6 +190,10 @@
 
                 case keyMap.r:
                   reply(evt);
+                  break;
+
+                case keyMap.m:
+                  message(evt);
                   break;
 
                 case keyMap.o:

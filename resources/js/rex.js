@@ -18,17 +18,32 @@ function fetchGroups( callback ) {
   });
 }
 
-function fetchTopics(groupId, callback) {
+function fetchGroupTopics(groupId, callback) {
   var url = convoreApiUrl + '/groups/' + groupId + '/topics.json';
   $.getJSON(url, function(data) {
     callback.call(this, data.topics );
   });
 }
 
-function fetchMessages(topicId, callback) {
+function fetchTopicMessages(topicId, callback) {
   var url = convoreApiUrl + '/topics/' + topicId + '/messages.json';
   $.getJSON(url, function(data) {
     callback.call(this, data.messages );
+  });
+}
+
+/* Fetches a list of direct message conversations for the current user*/
+function fetchConversations() {
+  var url = convoreApiUrl + '/messages.json';
+  $.getJSON(url, function(data) {
+    callback.call(this, data.conversations );
+  });
+}
+
+function fetchMentions(callback) {
+  var url = convoreApiUrl + '/account/mentions.json';
+  $.getJSON(url, function(data) {
+    callback.call(this, data.mentions, data.unread );
   });
 }
 

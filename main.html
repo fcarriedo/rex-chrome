@@ -81,14 +81,14 @@
       // Slide to
       function slideToTopics(groupId) {
         $('#content-pane').animate({"left": "-=350px"}, "normal");
-        fetchTopics( groupId , function(topics) {
+        fetchGroupTopics( groupId , function(topics) {
           $('#topics-content').html( $('#topic-tmpl').tmpl(topics) );
         });
       }
 
       function slideToMessages(topicId) {
         $('#content-pane').animate({"left": "-=350px"}, "normal");
-        fetchMessages( topicId , function(messages) {
+        fetchTopicMessages( topicId , function(messages) {
           $('#messages-content').html( $('#message-tmpl').tmpl(messages) );
 
           // We linkify all rendered messages.

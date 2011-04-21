@@ -111,7 +111,8 @@
 
         var keyMap = {
           up: 38, down: 40, left: 37, right: 39, help: 63,
-          h: 104, j: 106, k: 107, l: 108, m: 109, r: 114, o: 111
+          h: 104, j: 106, k: 107, l: 108, m: 109, r: 114, o: 111,
+          enter: 13
         };
 
         var modes = {
@@ -145,6 +146,12 @@
         function message(evt) {
           if(currentMode === modes.messages) {
             console.log('Focusing on message text are');
+          }
+        }
+
+        function enter(evt) {
+          if(currentMode === modes.messages) {
+            console.log('Enter was clicked on messages mode');
           }
         }
 
@@ -197,6 +204,10 @@
 
                 case keyMap.m:
                   message(evt);
+                  break;
+
+                case keyMap.enter:
+                  enter(evt);
                   break;
 
                 case keyMap.o:

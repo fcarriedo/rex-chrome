@@ -39,6 +39,9 @@ body {
   -webkit-box-pack: end;
   -webkit-box-flex: 1;
 }
+#header #notifications-pane img {
+  width: 22px;
+}
 #header .shadow-text {
   text-shadow: 2px 2px 2px #000;
 }

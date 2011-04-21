@@ -1,24 +1,18 @@
 <html>
   <head>
     <script src='resources/js/jquery.min.js'></script>
+    <script src='resources/js/convore-api.js'></script>
     <script src='resources/js/rex.js'></script>
   </head>
   <body>
     <script>
-      function startBgService() {
-        var authCtx = retrieveCredentials();
-        if( authCtx ) {
-          authCtx.success = initLiveFeed;
-          authCtx.error = retryLater;
 
-          validateCredentials(authCtx);
-        } else {
-          retryLater();
-        }
+      function startBgService() {
+        verifyAccount(initLiveFeed, retryLater);
       }
 
       function initLiveFeed() {
-        listenToLiveFeed( liveFeedObserver.notify );
+        convoreApi.listenToLiveFeed( liveFeedObserver.notify );
         console.log('Credentials verified and initializing feed.');
       }
 
@@ -63,7 +57,7 @@
           var msg = messages[i];
           if( msg.kind === 'message') {
             // TODO(fcarriedo): Refactor. Expensive to create RegEx obj per msg.
-            var usrHandleRegex = new RegExp("(^|[^a-zA-Z])(@" + getUsername() + ")([^a-zA-Z]|$)", 'i');
+            var usrHandleRegex = new RegExp("(^|[^a-zA-Z])(@" + userCxt.username + ")([^a-zA-Z]|$)", 'i');
             if( usrHandleRegex.test(msg.message) ) {
               var title = 'New Mention';
               var body = '"' + msg.message + '" - ' +  msg.user.username;

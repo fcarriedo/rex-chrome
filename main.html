@@ -103,6 +103,8 @@
 
         setLoadingMsg('#topics-pane .content-box');
 
+        keyboardActions.setMode( keyboardActions.modes.topics );
+
         $('#full-pane').animate({"left": "-=350px"}, "normal");
 
         var groupId = $(elem).attr('id').split('-')[1];
@@ -116,6 +118,8 @@
       function slideToMessages( elem ) {
 
         setLoadingMsg('#messages-pane .content-box');
+
+        keyboardActions.setMode( keyboardActions.modes.messages );
 
         $('#full-pane').animate({"left": "-=350px"}, "normal");
 
@@ -132,7 +136,8 @@
         });
       }
 
-      function scrollBack() {
+      function scrollBack(mode) {
+        keyboardActions.setMode( mode );
         $('#full-pane').animate({"left": "+=350px"}, "normal");
       }
 
@@ -159,20 +164,54 @@
 
         var currentMode = modes.groups; // Default mode: groups.
 
+        function getPaneSelectorFromCurrentMode() {
+          return '#' + currentMode + '-pane .content-box';
+        }
+
         function down(evt) {
-          console.log('going down..!');
+          var pane = $( getPaneSelectorFromCurrentMode() );
+          var selectedElem = pane.find('.selected');
+          if( selectedElem.length === 0 ) {
+            pane.children('.info-box').first().addClass('selected');
+          } else {
+            var nextElem = selectedElem.next();
+            selectedElem.removeClass('selected');
+            nextElem.addClass('selected');
+          }
         }
 
         function up(evt) {
-          console.log('going up..!');
+          var pane = $( getPaneSelectorFromCurrentMode() );
+          var selectedElem = pane.find('.selected');
+          if( selectedElem.length === 0 ) {
+            pane.children('.info-box').last().addClass('selected');
+          } else {
+            var previousElem = selectedElem.prev();
+            selectedElem.removeClass('selected');
+            previousElem.addClass('selected');
+          }
         }
 
         function left(evt) {
-          console.log('going left..!');
+          if( currentMode === modes.topics ) {
+            scrollBack(modes.groups);
+          } else if( currentMode === modes.messages ) {
+            scrollBack(modes.topics);
+          }
         }
 
         function right(evt) {
-          console.log('going right');
+          if( currentMode !== modes.messages ) {
+            var pane = $( getPaneSelectorFromCurrentMode() );
+            var selectedElem = pane.find('.selected');
+            if( selectedElem.length !== 0 ) {
+              if( currentMode === modes.groups ) {
+                slideToTopics( selectedElem );
+              } else if( currentMode === modes.topics ) {
+                slideToMessages( selectedElem );
+              }
+            }
+          }
         }
 
         function reply(evt) {
@@ -293,7 +332,7 @@
 
     <!-- Login pane -->
     <div id='login' style='display: none'><br/>
-      <div id='login-err' class='error'></div>
+      <div id='login-err' class='small error'></div>
       <table>
         <tr><td>Username:</td><td><input id='usr' type='text'/></td></tr>
         <tr><td>Password:</td><td><input id='pswd' type='password'/></td></tr>
@@ -309,7 +348,7 @@
       <div id='groups-pane' class='content-pane'>
         <div class='title'>
           <b>Groups</b>
-        </div>
+        </div><br/>
         <div class='content-box'>
           <!-- Here goes the content. -->
         </div>
@@ -320,7 +359,7 @@
         <div class='title'>
           <img src='resources/images/group.png' width='15px'/> <b><span id='topics-group-title'></span></b>
         </div>
-        <div class='back-link'><a href='#' onClick='scrollBack()'>Back to Groups</a></div>
+        <div class='back-link'><a href='#' onClick='scrollBack("groups")'>Back to Groups</a></div>
         <div class='content-box'>
           <!-- Here goes the content. -->
         </div>
@@ -331,7 +370,7 @@
         <div class='title'>
           <img src='resources/images/chat.png' width='15px'/> <b><span id='messages-topic-title'></span></b>
         </div>
-        <div class='back-link'><a href='#' onClick='scrollBack()'>Back to Topics</a></div>
+        <div class='back-link'><a href='#' onClick='scrollBack("topics")'>Back to Topics</a></div>
         <div class='content-box'>
           <!-- Here goes the content. -->
         </div>

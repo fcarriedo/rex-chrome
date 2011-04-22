@@ -161,7 +161,6 @@ div.info-box div.info-container div.info {
 
 /* Specific info-box formatting*/
 #groups-pane .info-box {
-  margin-top: 5px;
 }
 #groups-pane .pic img {
   width: 24px;
@@ -192,4 +191,8 @@ div.info-box div.info-container div.info {
 /* Generic styles */
 .error {
   color: red;
+}
+
+.selected {
+  background-color: lightyellow;
 }

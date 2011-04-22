@@ -9,9 +9,8 @@
       $(document).ready(function() {
         setTimeout(function() {
           verifyAccount(
-            function(){
-              initUiBehaviors();
-              showMainPane();
+            function(usrDetails){
+              initUi(usrDetails);
             },
             function() {
               showLoginPage(); // On account verification error.
@@ -27,9 +26,8 @@
         }
 
         authenticate(creds,
-          function(){
-            showMainPane();
-            getBackgroundPage().startBgService();
+          function(usrDetails){
+            initUi(usrDetails);
           },
           function(){
             showLoginError();
@@ -42,7 +40,19 @@
         showLoginPage();
       }
 
+      function initUi(usrDetails) {
+        $('#msg-form img').attr('src', usrDetails.img);
+
+        initUiBehaviors();
+        // Clear the badge.
+        badgeUtils.clearBadge();
+
+        showMainPane();
+      }
+
       function initUiBehaviors() {
+        keyboardActions.initBindings();
+
         $('div.group, div.topic').live('mouseover mouseout', function(event) {
           if (event.type == 'mouseover') {
             $(this).addClass('clickable');
@@ -50,15 +60,10 @@
             $(this).removeClass('clickable');
           }
         });
-
-        keyboardActions.initBindings();
-
-        // Clear the badge.
-        badgeUtils.clearBadge();
       }
 
       function showLoginPage() {
-        $('#content-pane').hide();
+        $('#main-view-pane').hide();
         $('#notifications-pane').hide();
         $('#login').fadeIn();
         $('#logout').hide();
@@ -67,11 +72,12 @@
       function showMainPane() {
         clearLoginForm();
         $('#login').hide();
-        $('#content-pane').fadeIn();
+        $('#main-view-pane').fadeIn();
         $('#notifications-pane').fadeIn();
         $('#logout').fadeIn();
         convoreApi.fetchGroups(function(groups) {
-          $('#groups-content').html( $('#group-tmpl').tmpl(groups) );
+          console.log(groups);
+          $('#groups-pane .content-box').html( $('#group-tmpl').tmpl(groups) );
         });
       }
 
@@ -90,26 +96,27 @@
       // TODO(fcarriedo): Do a $('#container').scrollTo('#id');
       // Slide to
       function slideToTopics(groupId) {
-        $('#content-pane').animate({"left": "-=350px"}, "normal");
+        $('#main-view-pane #full-pane').animate({"left": "-=350px"}, "normal");
         convoreApi.fetchGroupTopics( groupId , function(topics) {
-          $('#topics-content').html( $('#topic-tmpl').tmpl(topics) );
+          console.log(topics);
+          $('#topics-pane .content-box').html( $('#topic-tmpl').tmpl(topics) );
         });
       }
 
       function slideToMessages(topicId) {
-        $('#content-pane').animate({"left": "-=350px"}, "normal");
+        $('#full-pane').animate({"left": "-=350px"}, "normal");
         convoreApi.fetchTopicMessages( topicId , function(messages) {
-          $('#messages-content').html( $('#message-tmpl').tmpl(messages) );
+          $('#messages-pane .content-box').html( $('#message-tmpl').tmpl(messages) );
 
           // We linkify all rendered messages.
-          $('#messages-content div.message').each( function(index) {
+          $('#messages-pane .info-box .info').each( function(index) {
             $(this).html( linkUtils.linkify( $(this).html() ) );
           });
         });
       }
 
       function scrollBack() {
-        $('#content-pane').animate({"left": "+=350px"}, "normal");
+        $('#full-pane').animate({"left": "+=350px"}, "normal");
       }
 
      /** ======================================
@@ -263,10 +270,8 @@
       </div>
     </div>
 
-    <br/>
-
     <!-- Login pane -->
-    <div id='login' style='display: none'>
+    <div id='login' style='display: none'><br/>
       <div id='login-err' class='error'></div>
       <table>
         <tr><td>Username:</td><td><input id='usr' type='text'/></td></tr>
@@ -275,26 +280,47 @@
       </table>
     </div>
 
-    <!-- Main content pane -->
-    <div id='content-pane'>
+  <div id='main-view-pane'>
+
+    <div id='full-pane'>
 
       <!-- Groups pane -->
-      <div id="groups-pane">
-        <div id='groups-content'><span class='loading'>Loading...</span></div>
+      <div id='groups-pane' class='content-pane'>
+        <div class='title'>
+          <b>Groups</b>
+        </div>
+        <div class='content-box'>
+          <!-- Here goes the content. -->
+        </div>
       </div>
 
       <!-- Topics pane -->
-      <div id="topics-pane">
-        <a href='#' onClick='scrollBack()' class='back'>&lt; Back to groups</a><br/><br/>
-        Topics:
-        <div id='topics-content'><span class='loading'>Loading...</span></div>
+      <div id='topics-pane' class='content-pane'>
+        <div class='title'>
+          <img src='resources/images/group.png' width='15px'/> <b>The name of a group</b>
+        </div>
+        <div class='back-link'><a href='#' onClick='scrollBack()'>Back to Groups</a></div>
+        <div class='content-box'>
+          <!-- Here goes the content. -->
+        </div>
       </div>
 
-      <!-- messages pane -->
-      <div id="messages-pane">
-        <a href='#' onClick='scrollBack()' class='back'>&lt; Back to topics</a><br/><br/>
-        Messages:<br/><br/>
-        <div id='messages-content'><span class='loading'>Loading...</span></div>
+      <!-- Messages pane -->
+      <div id='messages-pane' class='content-pane'>
+        <div class='title'>
+          <img src='resources/images/chat.png' width='15px'/> <b>The title of a topic</b>
+        </div>
+        <div class='back-link'><a href='#' onClick='scrollBack()'>Back to Topics</a></div>
+        <div class='content-box'>
+          <!-- Here goes the content. -->
+        </div>
+
+        <div id='msg-form'>
+          <div><img src='' title='You!'/></div>
+          <div><textarea id='new-message'></textarea></div>
+          <div><a href='#' id='submit' onClick=''>Submit</a></div>
+        </div>
+
       </div>
 
     </div>
@@ -305,24 +331,34 @@
 
     <!-- Groups template -->
     <script id='group-tmpl' type=text/x-jquery-tmpl'>
-      <div id='group-${id}' class='group' onClick='slideToTopics( ${id} )'>
-        <img src='${creator.img}' title='${creator.username}'/>
-        <b><a href='#' onClick='openInConvore("${url}")'>${name}</a></b>
-        <span class='topic'> Topics: ${topics_count} </span>
+      <div id='group-${id}' class='info-box'>
+        <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
+        <div class='info-container'>
+          <div class='info'><a href='#' onClick='slideToTopics( ${id} )'>${name}</a></div>
+          <div class='metadata'>Topics: ${topics_count}</div>
+        </div>
       </div>
     </script>
 
     <!-- Topics template -->
     <script id='topic-tmpl' type=text/x-jquery-tmpl'>
-      <div id='topic-${id}' class='topic' onClick='slideToMessages( ${id} )'>
-        <b>${name}</b> - <i class='loading'>by ${creator.username} - Total messages: ${message_count} - <b>${unread}</b> unread</i>
+      <div id='topic-${id}' class='info-box' onClick='slideToMessages( ${id} )'>
+        <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
+        <div class='info-container'>
+          <div class='info'>${name}</div>
+          <div class='metadata'>Total messages: ${message_count} - <b>${unread}</b> unread</i></div>
+        </div>
       </div>
     </script>
 
     <!-- Messages template -->
     <script id='message-tmpl' type=text/x-jquery-tmpl'>
-      <div id='message-${id}' class='message'>
-        ${message} - <i class='loading'>by ${user.username}</i>
+      <div id='message-${id}' class='info-box'>
+        <div class='pic'><img src='${user.img}' title='${user.username}'/></div>
+        <div class='info-container'>
+          <div class='info'>${message}</div>
+          <div class='metadata'>by ${user.username}</div>
+        </div>
       </div>
     </script>
 

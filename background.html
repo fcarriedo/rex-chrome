@@ -11,8 +11,9 @@
         verifyAccount(initLiveFeed, retryLater);
       }
 
-      function initLiveFeed() {
-        convoreApi.listenToLiveFeed( liveFeedObserver.notify );
+      function initLiveFeed(usrDetails) {
+        setUpListeners(usrDetails);
+        convoreApi.listenToLiveFeed( liveFeedObserver.onFeedMessage );
         console.log('Credentials verified and initializing feed.');
       }
 
@@ -25,7 +26,7 @@
       var liveFeedObserver = function() {
         var listeners = [];
         return {
-          notify : function( data ) {
+          onFeedMessage : function( data ) {
             //console.log( JSON.stringify(data) );
             for(var i=0; i<listeners.length; i++ ) {
               listeners[i].call(this, data);
@@ -37,50 +38,53 @@
         };
       }();
 
-      /* Messages listener */
-      liveFeedObserver.addListener( function(messages) {
-        for(var i=0; i<messages.length; i++ ) {
-          var msg = messages[i];
-          if( msg.kind === 'direct-message') {
-            var title = 'New Private Message';
-            var body = '"' + msg.message + '" - ' + msg.user.username;
-            var url = '/messages/' + msg.user.username;
-            showSimpleNotification(url, title, body);
-            badgeUtils.addUnreadPrivateMessage();
-          }
-        }
-      });
+      function setUpListeners(usrDetails) {
 
-      /* Mentions listener */
-      liveFeedObserver.addListener( function(messages) {
-        for(var i=0; i<messages.length; i++ ) {
-          var msg = messages[i];
-          if( msg.kind === 'message') {
-            // TODO(fcarriedo): Refactor. Expensive to create RegEx obj per msg.
-            var usrHandleRegex = new RegExp("(^|[^a-zA-Z])(@" + userCxt.username + ")([^a-zA-Z]|$)", 'i');
-            if( usrHandleRegex.test(msg.message) ) {
-              var title = 'New Mention';
-              var body = '"' + msg.message + '" - ' +  msg.user.username;
-              var url = '/mentions';
+        /* Messages listener */
+        liveFeedObserver.addListener( function(messages) {
+          for(var i=0; i<messages.length; i++ ) {
+            var msg = messages[i];
+            if( msg.kind === 'direct-message') {
+              var title = 'New Private Message';
+              var body = '"' + msg.message + '" - ' + msg.user.username;
+              var url = '/messages/' + msg.user.username;
               showSimpleNotification(url, title, body);
-              badgeUtils.addUnreadMention();
+              badgeUtils.addUnreadPrivateMessage();
             }
           }
-        }
-      });
+        });
 
-      /* Topic listener */
-      liveFeedObserver.addListener( function(messages) {
-        for(var i=0; i<messages.length; i++ ) {
-          var msg = messages[i];
-          if( msg.kind === 'topic') {
-            var title = 'New Topic Created';
-            var body = '"' + msg.name + '"';
-            var url = msg.url;
-            showSimpleNotification(url, title, body);
+        /* Mentions listener */
+        liveFeedObserver.addListener( function(messages) {
+          for(var i=0; i<messages.length; i++ ) {
+            var msg = messages[i];
+            if( msg.kind === 'message') {
+              // TODO(fcarriedo): Refactor. Expensive to create RegEx obj per msg.
+              var usrHandleRegex = new RegExp("(^|[^a-zA-Z])(@" + usrDetails.username + ")([^a-zA-Z]|$)", 'i');
+              if( usrHandleRegex.test(msg.message) ) {
+                var title = 'New Mention';
+                var body = '"' + msg.message + '" - ' +  msg.user.username;
+                var url = '/mentions';
+                showSimpleNotification(url, title, body);
+                badgeUtils.addUnreadMention();
+              }
+            }
           }
-        }
-      });
+        });
+
+        /* Topic listener */
+        liveFeedObserver.addListener( function(messages) {
+          for(var i=0; i<messages.length; i++ ) {
+            var msg = messages[i];
+            if( msg.kind === 'topic') {
+              var title = 'New Topic Created';
+              var body = '"' + msg.name + '"';
+              var url = msg.url;
+              showSimpleNotification(url, title, body);
+            }
+          }
+        });
+      }
 
       // Start the background service.
       startBgService();

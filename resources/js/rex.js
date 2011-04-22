@@ -4,9 +4,6 @@ var convoreUrl = 'https://convore.com';
 
 // The convoreApi object
 var convoreApi;
-// user context object. Holds information such as username, user image,
-// usr url, etc.
-var userCxt; // Global variable that holds the logged user information.
 
 /** ======================================
  *   Convore chrome utils
@@ -89,13 +86,11 @@ function verifyAccount(onSuccessCallback, onErrorCallback, newCreds) {
     convoreApi = new ConvoreAPI(authCtx);
     convoreApi.verifyAccount(
       function(usrDetails) {
-        userCtx = usrDetails;
         persistCredentials(authCtx.username, authCtx.password);
-        onSuccessCallback.call();
+        onSuccessCallback.call(this, usrDetails);
       },
       function(err) {
         convoreApi = null;
-        userCtx = null;
         removeCredentials();
         onErrorCallback.call();
       }
@@ -160,7 +155,7 @@ var datastore = function(storage) {
 
 function showSimpleNotification(url, title, body) {
   var notification = webkitNotifications.createNotification('resources/images/rex.png', title, body);
-  notification.onClick = openInConvore(url);
+  //notification.onClick = openInConvore(url);
   notification.show();
   setTimeout(function(){ notification.cancel(); }, 15000);
 }

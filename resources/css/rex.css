@@ -140,7 +140,7 @@ div#msg-form a#submit {
 div.info-box {
   display: -webkit-box;
   -webkit-box-orient: horizontal;
-  padding: 3px;
+  padding: 3px 25px 3px 3px;
   border-bottom: 1px solid lightblue;
 }
 div.info-box div.info-container {
@@ -177,7 +177,7 @@ div.info-box div.info-container div.info {
   padding: 3px;
 }
 #messages-pane .info-box > div {
-  padding: 1px;
+  padding: 2px;
 }
 #messages-pane .pic img {
   width: 18px;

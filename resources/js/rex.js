@@ -229,15 +229,3 @@ var badgeUtils = function() {
 jQuery.expr[':'].focus = function( elem ) {
   return elem === document.activeElement && ( elem.type || elem.href );
 };
-
-// Adapted from a solution to set the cursor at the end of the text on a textarea/input.
-// Stripped down what wasn't chrome specific.
-// See: http://stackoverflow.com/questions/499126/jquery-set-cursor-position-in-text-area answer by @Mark
-$.fn.focusAtEnd = function( length ) {
-  return this.each(function() {
-    if (this.setSelectionRange) {
-      this.focus();
-      this.setSelectionRange(length, length);
-    }
-  });
-};

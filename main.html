@@ -225,7 +225,7 @@
             var selectedElem = pane.find('.selected');
             if( selectedElem.length !== 0 ) {
               var replyToUserHandle = '@' + selectedElem.find('.creator-username').text() + ' ';
-              $('#msg-form textarea').val( replyToUserHandle ).focusAtEnd( replyToUserHandle.length );
+              $('#msg-form textarea').focus().val( replyToUserHandle );
               evt.preventDefault();
             }
           }

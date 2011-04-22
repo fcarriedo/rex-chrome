@@ -150,6 +150,10 @@
         $(selector).html('<span class="small metadata">Loading...</span>');
       }
 
+      function helpToggle() {
+        $('#help-overlay').toggle();
+      }
+
      /** ======================================
       *   Keyboard bindings
       *  ======================================
@@ -259,7 +263,7 @@
         }
 
         function help(evt) {
-          console.log('asking for help');
+          helpToggle()
         }
 
         return {
@@ -275,6 +279,12 @@
             $(document).keypress(function(evt) {
               var keyCode = evt.which;
 
+              // If help is visible it should dissapear upon any key.
+              if( $('#help-overlay').is(':visible') && keyCode !== keyMap.help) {
+                helpToggle();
+              }
+
+              // When the user is writing a message, all keyboard shorcuts should be bypassed.
               if( $('#msg-form textarea').is(':focus') && currentMode === modes.messages && keyCode !== keyMap.enter ) {
                 return;
               }
@@ -352,7 +362,9 @@
       </div>
       <div id="header-bottom">
         <div id="subtitle" class='shadow-text'>(A Convore Chrome Extension)</div>
-        <div id="logout" style='display: none'><a href='#' onClick='logout()'>logout</a></div>
+        <div id="logout" style='display: none'>
+          <a href='#' onClick='helpToggle()'>?</a> | <a href='#' onClick='logout()'>logout</a>
+        </div>
       </div>
     </div>
 
@@ -366,50 +378,56 @@
       </table>
     </div>
 
-  <div id='main-view-pane'>
 
-    <div id='full-pane'>
+    <!-- Main content pane -->
+    <div id='main-view-pane'>
 
-      <!-- Groups pane -->
-      <div id='groups-pane' class='content-pane'>
-        <div class='title'>
-          <b>Groups</b>
-        </div><br/>
-        <div class='content-box'>
-          <!-- Here goes the content. -->
-        </div>
-      </div>
+      <div id='full-pane'>
 
-      <!-- Topics pane -->
-      <div id='topics-pane' class='content-pane'>
-        <div class='title'>
-          <img src='resources/images/group.png' width='15px'/> <b><span id='topics-group-title'></span></b>
-        </div>
-        <div class='back-link'><a href='#' onClick='scrollBack("groups")'>Back to Groups</a></div>
-        <div class='content-box'>
-          <!-- Here goes the content. -->
-        </div>
-      </div>
-
-      <!-- Messages pane -->
-      <div id='messages-pane' class='content-pane'>
-        <div class='title'>
-          <img src='resources/images/chat.png' width='15px'/> <b><span id='messages-topic-title'></span></b>
-        </div>
-        <div class='back-link'><a href='#' onClick='scrollBack("topics")'>Back to Topics</a></div>
-        <div class='content-box'>
-          <!-- Here goes the content. -->
+        <!-- Groups pane -->
+        <div id='groups-pane' class='content-pane'>
+          <div class='title'>
+            <b>Groups</b>
+          </div><br/>
+          <div class='content-box'>
+            <!-- Here goes the content. -->
+          </div>
         </div>
 
-        <div id='msg-form'>
-          <div><img title='You!'/></div>
-          <div><textarea id='new-message'></textarea></div>
-          <div><a href='#' id='submit' onClick=''>Submit</a></div>
+        <!-- Topics pane -->
+        <div id='topics-pane' class='content-pane'>
+          <div class='title'>
+            <img src='resources/images/group.png' width='15px'/> <b><span id='topics-group-title'></span></b>
+          </div>
+          <div class='back-link'><a href='#' onClick='scrollBack("groups")'>Back to Groups</a></div>
+          <div class='content-box'>
+            <!-- Here goes the content. -->
+          </div>
+        </div>
+
+        <!-- Messages pane -->
+        <div id='messages-pane' class='content-pane'>
+          <div class='title'>
+            <img src='resources/images/chat.png' width='15px'/> <b><span id='messages-topic-title'></span></b>
+          </div>
+          <div class='back-link'><a href='#' onClick='scrollBack("topics")'>Back to Topics</a></div>
+          <div class='content-box'>
+            <!-- Here goes the content. -->
+          </div>
+
+          <div id='msg-form'>
+            <div><img title='You!'/></div>
+            <div><textarea id='new-message'></textarea></div>
+            <div><a href='#' id='submit' onClick=''>Submit</a></div>
+          </div>
+
         </div>
 
       </div>
 
     </div>
+
+
 
 
 
@@ -453,6 +471,31 @@
       <div class='user'>
       </div>
     </script>
+
+
+
+    <!-- Help overlay -->
+    <div id='help-overlay'> <div id='help'>
+        <div id='help-close' style='text-align: right;'>
+          <a href='#' onClick='helpToggle()'>close</a>
+        </div>
+        <div id='help-info'>
+          <h3>Keyboard shortcuts</h3>
+
+          <h4>Navigation</h4>
+
+          <b>j</b> - Select next element<br/>
+          <b>k</b> - Select previous element<br/>
+          <b>l</b> - Drill in 'selected' element<br/>
+          <b>h</b> - Back to parent pane<br/>
+
+          <h4>Actions</h4>
+
+          <b>m</b> - Write a message (messages pane)<br/>
+          <b>r</b> - Reply to 'selected' message (messages pane)<br/>
+        </div>
+      </div>
+    </div>
 
   </body>
 </html>

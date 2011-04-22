@@ -150,8 +150,12 @@ div.info-box div.info-container {
 div.info-box div.info-container div.info {
   -webkit-box-flex: 1;
 }
-div.info-box div.info-container div.metadata {
+
+.small {
   font-size: 67%;
+}
+
+.metadata {
   color: #999;
 }
 

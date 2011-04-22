@@ -155,7 +155,7 @@ var datastore = function(storage) {
 
 function showSimpleNotification(url, title, body) {
   var notification = webkitNotifications.createNotification('resources/images/rex.png', title, body);
-  //notification.onClick = openInConvore(url);
+  notification.onclick = openInConvore(url);
   notification.show();
   setTimeout(function(){ notification.cancel(); }, 15000);
 }

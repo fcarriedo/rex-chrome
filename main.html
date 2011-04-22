@@ -41,9 +41,13 @@
       }
 
       function initUi(usrDetails) {
+
+        setLoadingMsg('#groups-pane .content-box');
+
         $('#msg-form img').attr('src', usrDetails.img);
 
         initUiBehaviors();
+
         // Clear the badge.
         badgeUtils.clearBadge();
 
@@ -95,16 +99,29 @@
 
       // TODO(fcarriedo): Do a $('#container').scrollTo('#id');
       // Slide to
-      function slideToTopics(groupId) {
-        $('#main-view-pane #full-pane').animate({"left": "-=350px"}, "normal");
+      function slideToTopics( elem ) {
+
+        setLoadingMsg('#topics-pane .content-box');
+
+        $('#full-pane').animate({"left": "-=350px"}, "normal");
+
+        var groupId = $(elem).attr('id').split('-')[1];
+        $('#topics-group-title').text( $(elem).find('.info').text() );
+
         convoreApi.fetchGroupTopics( groupId , function(topics) {
-          console.log(topics);
           $('#topics-pane .content-box').html( $('#topic-tmpl').tmpl(topics) );
         });
       }
 
-      function slideToMessages(topicId) {
+      function slideToMessages( elem ) {
+
+        setLoadingMsg('#messages-pane .content-box');
+
         $('#full-pane').animate({"left": "-=350px"}, "normal");
+
+        var topicId = $(elem).attr('id').split('-')[1];
+        $('#messages-topic-title').text( $(elem).find('.info').text() );
+
         convoreApi.fetchTopicMessages( topicId , function(messages) {
           $('#messages-pane .content-box').html( $('#message-tmpl').tmpl(messages) );
 
@@ -117,6 +134,10 @@
 
       function scrollBack() {
         $('#full-pane').animate({"left": "+=350px"}, "normal");
+      }
+
+      function setLoadingMsg(selector) {
+        $(selector).html('<span class="small metadata">Loading...</span>');
       }
 
      /** ======================================
@@ -297,7 +318,7 @@
       <!-- Topics pane -->
       <div id='topics-pane' class='content-pane'>
         <div class='title'>
-          <img src='resources/images/group.png' width='15px'/> <b>The name of a group</b>
+          <img src='resources/images/group.png' width='15px'/> <b><span id='topics-group-title'></span></b>
         </div>
         <div class='back-link'><a href='#' onClick='scrollBack()'>Back to Groups</a></div>
         <div class='content-box'>
@@ -308,7 +329,7 @@
       <!-- Messages pane -->
       <div id='messages-pane' class='content-pane'>
         <div class='title'>
-          <img src='resources/images/chat.png' width='15px'/> <b>The title of a topic</b>
+          <img src='resources/images/chat.png' width='15px'/> <b><span id='messages-topic-title'></span></b>
         </div>
         <div class='back-link'><a href='#' onClick='scrollBack()'>Back to Topics</a></div>
         <div class='content-box'>
@@ -331,22 +352,22 @@
 
     <!-- Groups template -->
     <script id='group-tmpl' type=text/x-jquery-tmpl'>
-      <div id='group-${id}' class='info-box'>
+      <div id='group-${id}' class='info-box' onClick='slideToTopics( this )'>
         <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
         <div class='info-container'>
-          <div class='info'><a href='#' onClick='slideToTopics( ${id} )'>${name}</a></div>
-          <div class='metadata'>Topics: ${topics_count}</div>
+          <div class='info'>${name}</div>
+          <div class='small metadata'>Topics: ${topics_count}</div>
         </div>
       </div>
     </script>
 
     <!-- Topics template -->
     <script id='topic-tmpl' type=text/x-jquery-tmpl'>
-      <div id='topic-${id}' class='info-box' onClick='slideToMessages( ${id} )'>
+      <div id='topic-${id}' class='info-box' onClick='slideToMessages( this )'>
         <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
         <div class='info-container'>
           <div class='info'>${name}</div>
-          <div class='metadata'>Total messages: ${message_count} - <b>${unread}</b> unread</i></div>
+          <div class='small metadata'>Total messages: ${message_count} - <b>${unread}</b> unread</i></div>
         </div>
       </div>
     </script>
@@ -357,7 +378,7 @@
         <div class='pic'><img src='${user.img}' title='${user.username}'/></div>
         <div class='info-container'>
           <div class='info'>${message}</div>
-          <div class='metadata'>by ${user.username}</div>
+          <div class='small metadata'>by ${user.username}</div>
         </div>
       </div>
     </script>

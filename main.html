@@ -138,6 +138,11 @@
 
       function scrollBack(mode) {
         keyboardActions.setMode( mode );
+
+        // Make sure that the msg form is cleared
+        $('#msg-form textarea').val('');
+        $('#msg-form textarea').blur();
+
         $('#full-pane').animate({"left": "+=350px"}, "normal");
       }
 
@@ -216,19 +221,36 @@
 
         function reply(evt) {
           if(currentMode === modes.messages) {
-            console.log('Prefilling msg txtarea with @usrhandle and focus');
+            var pane = $( getPaneSelectorFromCurrentMode() );
+            var selectedElem = pane.find('.selected');
+            if( selectedElem.length !== 0 ) {
+              var replyToUserHandle = '@' + selectedElem.find('.creator-username').text() + ' ';
+              $('#msg-form textarea').val( replyToUserHandle ).focusAtEnd( replyToUserHandle.length );
+              evt.preventDefault();
+            }
           }
         }
 
         function message(evt) {
           if(currentMode === modes.messages) {
-            console.log('Focusing on message text are');
+            $('#msg-form textarea').focus();
+            evt.preventDefault();
+            var pane = $( getPaneSelectorFromCurrentMode() );
+            var selectedElem = pane.find('.selected');
+            if( selectedElem.length !== 0 ) {
+              selectedElem.removeClass('selected');
+            }
           }
         }
 
         function enter(evt) {
           if(currentMode === modes.messages) {
-            console.log('Enter was clicked on messages mode');
+            var msg = $('#msg-form textarea').val();
+            if( $.trim(msg) !== '' ) {
+              // Create a message object send it and add it to the list on success.
+            }
+
+            $('#msg-form textarea').blur(); // Make it loose focus.
           }
         }
 
@@ -252,6 +274,10 @@
 
             $(document).keypress(function(evt) {
               var keyCode = evt.which;
+
+              if( $('#msg-form textarea').is(':focus') && currentMode === modes.messages && keyCode !== keyMap.enter ) {
+                return;
+              }
 
               switch(keyCode) {
 
@@ -376,7 +402,7 @@
         </div>
 
         <div id='msg-form'>
-          <div><img src='' title='You!'/></div>
+          <div><img title='You!'/></div>
           <div><textarea id='new-message'></textarea></div>
           <div><a href='#' id='submit' onClick=''>Submit</a></div>
         </div>
@@ -417,7 +443,7 @@
         <div class='pic'><img src='${user.img}' title='${user.username}'/></div>
         <div class='info-container'>
           <div class='info'>${message}</div>
-          <div class='small metadata'>by ${user.username}</div>
+          <div class='small metadata'>by <span class='creator-username'>${user.username}</span></div>
         </div>
       </div>
     </script>

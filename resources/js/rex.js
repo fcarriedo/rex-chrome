@@ -218,3 +218,26 @@ var badgeUtils = function() {
     }
   };
 }();
+
+
+/** ======================================
+ *   Some jQuery utils
+ *  ======================================
+ */
+// Helps to realize if the element is focused a la jQuery style: $(elem).is(':focus');
+// See: https://gist.github.com/450017
+jQuery.expr[':'].focus = function( elem ) {
+  return elem === document.activeElement && ( elem.type || elem.href );
+};
+
+// From a solution to set the cursor at the end of the text on a textarea.
+// Stripped down what wasn't chrome specific.
+// See: http://stackoverflow.com/questions/499126/jquery-set-cursor-position-in-text-area answer by @Mark
+$.fn.focusAtEnd = function( length ) {
+  return this.each(function() {
+    if (this.setSelectionRange) {
+      this.focus();
+      this.setSelectionRange(length, length);
+    }
+  });
+};

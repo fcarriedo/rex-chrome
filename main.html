@@ -37,6 +37,9 @@
 
       function logout() {
         doLogout();
+        if( $('#help-overlay').is(':visible') ) {
+          helpToggle();
+        }
         showLoginPage();
       }
 

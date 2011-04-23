@@ -32,7 +32,7 @@ var linkUtils = function() {
   // User handle regex.
   var usrHandleRegex = /@([a-z]|[0-9]|[_])+/gi;
   // Images URLs regex.
-  var imagesUrlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+(png|jpg|jpeg|gif))/gi;
+  var imagesUrlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+(\.png|\.jpg|\.jpeg|\.gif))/gi;
 
   return {
 

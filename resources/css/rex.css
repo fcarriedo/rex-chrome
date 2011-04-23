@@ -160,7 +160,9 @@ div.info-box div.info-container div.info {
 }
 
 /* Specific info-box formatting*/
-#groups-pane .info-box {
+#groups-pane .info-box:hover, #topics-pane .info-box:hover {
+  cursor: hand;
+  background-color: #ccccff;
 }
 #groups-pane .pic img {
   width: 24px;

@@ -6,6 +6,8 @@
     <script src='resources/js/convore-api.js'></script>
     <script src='resources/js/rex.js'></script>
     <script>
+      var panes = {groups: 'groups', topics: 'topics', messages: 'messages'};
+
       $(document).ready(function() {
         setTimeout(function() {
           verifyAccount(
@@ -20,9 +22,17 @@
       });
 
       function login() {
+        var usr = $('#usr').val().trim();
+        var pswd = $('#pswd').val().trim();
+
+        if(usr === '' || pswd === '') {
+          showLoginError();
+          return;
+        }
+
         var creds = {
-          username: $('#usr').val(),
-          password: $('#pswd').val()
+          username: usr,
+          password: pswd
         }
 
         authenticate(creds,
@@ -40,12 +50,19 @@
         if( $('#help-overlay').is(':visible') ) {
           helpToggle();
         }
+        keyboardActions.unbind();
         showLoginPage();
       }
 
       function initUi(usrDetails) {
 
         setLoadingMsg('#groups-pane .content-box');
+
+        session.currentPane( panes.groups );
+        session.userDetails( usrDetails );
+        keyboardActions.setMode( keyboardActions.modes.groups );
+
+        $('#full-pane').css('left', '0'); // Reset the main pane to position 0.
 
         $('#msg-form img').attr('src', usrDetails.img);
 
@@ -58,7 +75,7 @@
       }
 
       function initUiBehaviors() {
-        keyboardActions.initBindings();
+        keyboardActions.bind();
 
         $('div.group, div.topic').live('mouseover mouseout', function(event) {
           if (event.type == 'mouseover') {
@@ -106,28 +123,41 @@
 
         setLoadingMsg('#topics-pane .content-box');
 
+        session.currentPane( panes.topics );
         keyboardActions.setMode( keyboardActions.modes.topics );
 
         $('#full-pane').animate({"left": "-=350px"}, "normal");
 
         var groupId = $(elem).attr('id').split('-')[1];
-        $('#topics-group-title').text( $(elem).find('.info').text() );
+        var groupTitle =  $(elem).find('.info').text();
+
+        var group = {id: groupId, text: groupTitle};
+        session.selectedGroup( group );
+
+        $('#topics-group-title').text( group.text );
 
         convoreApi.fetchGroupTopics( groupId , function(topics) {
           $('#topics-pane .content-box').html( $('#topic-tmpl').tmpl(topics) );
         });
       }
 
+
       function slideToMessages( elem ) {
 
         setLoadingMsg('#messages-pane .content-box');
 
+        session.currentPane( panes.messages );
         keyboardActions.setMode( keyboardActions.modes.messages );
 
         $('#full-pane').animate({"left": "-=350px"}, "normal");
 
         var topicId = $(elem).attr('id').split('-')[1];
-        $('#messages-topic-title').text( $(elem).find('.info').text() );
+        var topicTitle = $(elem).find('.info').text();
+
+        var topic = {id: topicId, text: topicTitle};
+        session.selectedTopic( topic );
+
+        $('#messages-topic-title').text( topic.text );
 
         convoreApi.fetchTopicMessages( topicId , function(messages) {
           $('#messages-pane .content-box').html( $('#message-tmpl').tmpl(messages) );
@@ -139,8 +169,9 @@
         });
       }
 
-      function scrollBack(mode) {
-        keyboardActions.setMode( mode );
+      function scrollBackTo( pane ) {
+        session.currentPane( pane );
+        keyboardActions.setMode( pane );
 
         // Make sure that the msg form is cleared
         $('#msg-form textarea').val('');
@@ -156,6 +187,7 @@
       function helpToggle() {
         $('#help-overlay').toggle();
       }
+
 
      /** ======================================
       *   Keyboard bindings
@@ -206,9 +238,9 @@
 
         function left(evt) {
           if( currentMode === modes.topics ) {
-            scrollBack(modes.groups);
+            scrollBackTo( panes.groups );
           } else if( currentMode === modes.messages ) {
-            scrollBack(modes.topics);
+            scrollBackTo( panes.topics );
           }
         }
 
@@ -253,6 +285,9 @@
         function enter(evt) {
           if(currentMode === modes.messages) {
             var msg = $('#msg-form textarea').val();
+
+            console.log( 'Topic id: ' + session.selectedTopic().id );
+
             if( $.trim(msg) !== '' ) {
               // Create a message object send it and add it to the list on success.
             }
@@ -277,9 +312,9 @@
             currentMode = newMode;
           },
 
-          initBindings: function() {
+          bind: function() {
 
-            $(document).keypress(function(evt) {
+            $(document).bind('keypress', function(evt) {
               var keyCode = evt.which;
 
               // If help is visible it should dissapear upon any key.
@@ -339,6 +374,9 @@
 
               }
             });
+          },
+          unbind: function() {
+            $(document).unbind('keypress');
           }
         };
       }();
@@ -402,7 +440,7 @@
           <div class='title'>
             <img src='resources/images/group.png' width='15px'/> <b><span id='topics-group-title'></span></b>
           </div>
-          <div class='back-link'><a href='#' onClick='scrollBack("groups")'>Back to Groups</a></div>
+          <div class='back-link'><a href='#' onClick='scrollBackTo( panes.groups )'>Back to Groups</a></div>
           <div class='content-box'>
             <!-- Here goes the content. -->
           </div>
@@ -413,7 +451,7 @@
           <div class='title'>
             <img src='resources/images/chat.png' width='15px'/> <b><span id='messages-topic-title'></span></b>
           </div>
-          <div class='back-link'><a href='#' onClick='scrollBack("topics")'>Back to Topics</a></div>
+          <div class='back-link'><a href='#' onClick='scrollBackTo( panes.topics )'>Back to Topics</a></div>
           <div class='content-box'>
             <!-- Here goes the content. -->
           </div>

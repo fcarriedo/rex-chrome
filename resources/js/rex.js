@@ -91,7 +91,7 @@ function verifyAccount(onSuccessCallback, onErrorCallback, newCreds) {
       },
       function(err) {
         convoreApi = null;
-        removeCredentials();
+        datastore.clear();
         onErrorCallback.call();
       }
     );
@@ -103,8 +103,8 @@ function authenticate(creds, onSuccessCallback, onErrorCallback) {
 }
 
 function doLogout() {
-  removeCredentials();
-  userCtx = null;
+  datastore.clear();
+  session.clear();
   convoreApi = null;
 }
 
@@ -127,6 +127,50 @@ function persistCredentials(username, password) {
   datastore.save('convore.auth', username + ':' + password);
 }
 
+/** ======================================
+*   Session utils
+*   (supported by sessionStorage)
+*  ======================================
+*/
+
+var session = function() {
+
+  return {
+
+    currentPane: function( pane ) {
+      if( !pane ) {
+        var currntPane = sessionStorage.getItem('currentPane');
+        if( !currntPane ) {
+          currentPane( panes.groups ); // If not set.. initialize it to groups.
+          return panes.groups;
+        } else {
+          return currntPane;
+        }
+      } else {
+        sessionStorage.setItem( 'currentPane', pane );
+      }
+    },
+
+    selectedGroup: function( group ) {
+      if( !group ) return JSON.parse( sessionStorage.getItem('selectedGroup') );
+      sessionStorage.setItem( 'selectedGroup', JSON.stringify(group) );
+    },
+
+    selectedTopic: function( topic ) {
+      if( !topic ) return JSON.parse( sessionStorage.getItem('selectedTopic') );
+      sessionStorage.setItem( 'selectedTopic' , JSON.stringify(topic) );
+    },
+
+    userDetails: function( usrDetails ) {
+      if( !usrDetails ) return JSON.parse( sessionStorage.getItem('userDetails') );
+      sessionStorage.setItem( 'userDetails' , JSON.stringify(usrDetails) );
+    },
+
+    clear: function() {
+      sessionStorage.clear();
+    }
+  };
+}();
 
 /** ======================================
  *   Persistence abstraction
@@ -144,6 +188,9 @@ var datastore = function(storage) {
     },
     delete: function(key) {
       storage.removeItem(key);
+    },
+    clear: function() {
+      storage.clear();
     }
   };
 }(localStorage);

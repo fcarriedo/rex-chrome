@@ -11,6 +11,9 @@
         verifyAccount(initLiveFeed, retryLater);
       }
 
+      function stopBgService() {
+      }
+
       function initLiveFeed(usrDetails) {
         setUpListeners(usrDetails);
         convoreApi.listenToLiveFeed( liveFeedObserver.onFeedMessage );

@@ -31,12 +31,17 @@ var linkUtils = function() {
   var urlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+([^\s\.!?"'*`\[\]()<>{}]))/gi;
   // User handle regex.
   var usrHandleRegex = /@([a-z]|[0-9]|[_])+/gi;
+  // Images URLs regex.
+  var imagesUrlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+(png|jpg|jpeg|gif))/gi;
 
   return {
 
     /* Linkifys URLs and user passwords. */
     linkify: function(str) {
       var matchArray;
+
+      // We make a copy of the original str which we can use as a clean canvas if needed before any process modifies it.
+      var origStr = str; 
 
       // Linkify all URLs.
       var urls = [];
@@ -55,6 +60,16 @@ var linkUtils = function() {
       for( var i=0; i<usrHandles.length; i++ ) {
         var convoreUsrPath = '/users/' + usrHandles[i].substring(1);
         str = str.replace(new RegExp(usrHandles[i], 'gi'), "<a href='#' onClick=\"openInConvore('" + convoreUsrPath + "')\">" + usrHandles[i] + "</a>");
+      }
+
+      // Append an 'img' element to the string for every image found on the string.
+      // Images will appear after the message.
+      var imgLinks = [];
+      while( (matchArray = imagesUrlRegex.exec(origStr) ) != null ) {
+        imgLinks.push("<a href='#' onClick=\"openInNewTab('" + matchArray[0] + "')\"><img src='" + matchArray[0] + "'/></a>" );
+      }
+      if( imgLinks.length !== 0 ) {
+        str += '<br/>' + imgLinks.join('<br/>')
       }
 
       return str;

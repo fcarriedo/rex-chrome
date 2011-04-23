@@ -196,6 +196,10 @@ div.info-box div.info-container div.info {
 #messages-pane #msg-form img {
   width: 24px;
 }
+#messages-pane .info-box .info img {
+  max-width: 270px;
+  margin: 5px;
+}
 #messages-pane .info-box .actions {
   display: none;
 }

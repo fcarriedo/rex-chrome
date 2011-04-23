@@ -47,20 +47,17 @@
 
       function logout() {
         doLogout();
-        if( $('#help-overlay').is(':visible') ) {
-          helpToggle();
-        }
+        if( $('#help-overlay').is(':visible') ) { helpToggle(); }
         keyboardActions.unbind();
         showLoginPage();
       }
 
       function initUi(usrDetails) {
 
-        setLoadingMsg('#groups-pane .content-box');
+        setLoadingMsg( panes.groups );
 
         session.currentPane( panes.groups );
         session.userDetails( usrDetails );
-        keyboardActions.setMode( keyboardActions.modes.groups );
 
         $('#full-pane').css('left', '0'); // Reset the main pane to position 0.
 
@@ -121,10 +118,9 @@
       // Slide to
       function slideToTopics( elem ) {
 
-        setLoadingMsg('#topics-pane .content-box');
+        setLoadingMsg( panes.topics );
 
         session.currentPane( panes.topics );
-        keyboardActions.setMode( keyboardActions.modes.topics );
 
         $('#full-pane').animate({"left": "-=350px"}, "normal");
 
@@ -144,10 +140,9 @@
 
       function slideToMessages( elem ) {
 
-        setLoadingMsg('#messages-pane .content-box');
+        setLoadingMsg( panes.messages );
 
         session.currentPane( panes.messages );
-        keyboardActions.setMode( keyboardActions.modes.messages );
 
         $('#full-pane').animate({"left": "-=350px"}, "normal");
 
@@ -171,7 +166,6 @@
 
       function scrollBackTo( pane ) {
         session.currentPane( pane );
-        keyboardActions.setMode( pane );
 
         // Make sure that the msg form is cleared
         $('#msg-form textarea').val('');
@@ -180,7 +174,8 @@
         $('#full-pane').animate({"left": "+=350px"}, "normal");
       }
 
-      function setLoadingMsg(selector) {
+      function setLoadingMsg(pane) {
+        var selector = '#' + pane + '-pane .content-box'
         $(selector).html('<span class="small metadata">Loading...</span>');
       }
 
@@ -188,6 +183,16 @@
         $('#help-overlay').toggle();
       }
 
+      /* Gets the content box of the current pane */
+      function getCurrentContentPane() {
+        return $( '#' + session.currentPane() + '-pane .content-box' );
+      }
+
+      /* Gets the 'selected' element from the current content pane */
+      function getSelectedElementOnCurrentPane() {
+        var selectedElem = getCurrentContentPane().find('.selected');
+        return selectedElem.length !== 0 ? selectedElem : null;
+      }
 
      /** ======================================
       *   Keyboard bindings
@@ -198,25 +203,14 @@
 
         var keyMap = {
           up: 38, down: 40, left: 37, right: 39, help: 63,
-          h: 104, j: 106, k: 107, l: 108, m: 109, r: 114, o: 111,
+          h: 104, j: 106, k: 107, l: 108, m: 109, r: 114, o: 111, s: 115,
           enter: 13
         };
 
-        var modes = {
-          groups: 'groups', topics: 'topics', messages: 'messages'
-        };
-
-        var currentMode = modes.groups; // Default mode: groups.
-
-        function getPaneSelectorFromCurrentMode() {
-          return '#' + currentMode + '-pane .content-box';
-        }
-
         function down(evt) {
-          var pane = $( getPaneSelectorFromCurrentMode() );
-          var selectedElem = pane.find('.selected');
-          if( selectedElem.length === 0 ) {
-            pane.children('.info-box').first().addClass('selected');
+          var selectedElem = getSelectedElementOnCurrentPane();
+          if( !selectedElem ) {
+            getCurrentContentPane().children('.info-box').first().addClass('selected');
           } else {
             var nextElem = selectedElem.next();
             selectedElem.removeClass('selected');
@@ -225,10 +219,9 @@
         }
 
         function up(evt) {
-          var pane = $( getPaneSelectorFromCurrentMode() );
-          var selectedElem = pane.find('.selected');
-          if( selectedElem.length === 0 ) {
-            pane.children('.info-box').last().addClass('selected');
+          var selectedElem = getSelectedElementOnCurrentPane();
+          if( !selectedElem ) {
+            getCurrentContentPane().children('.info-box').last().addClass('selected');
           } else {
             var previousElem = selectedElem.prev();
             selectedElem.removeClass('selected');
@@ -237,21 +230,20 @@
         }
 
         function left(evt) {
-          if( currentMode === modes.topics ) {
+          if( session.currentPane() === panes.topics ) {
             scrollBackTo( panes.groups );
-          } else if( currentMode === modes.messages ) {
+          } else if( session.currentPane() === panes.messages ) {
             scrollBackTo( panes.topics );
           }
         }
 
         function right(evt) {
-          if( currentMode !== modes.messages ) {
-            var pane = $( getPaneSelectorFromCurrentMode() );
-            var selectedElem = pane.find('.selected');
-            if( selectedElem.length !== 0 ) {
-              if( currentMode === modes.groups ) {
+          if( session.currentPane() !== panes.messages ) {
+            var selectedElem = getSelectedElementOnCurrentPane();
+            if( selectedElem ) {
+              if( session.currentPane() === panes.groups ) {
                 slideToTopics( selectedElem );
-              } else if( currentMode === modes.topics ) {
+              } else if( session.currentPane() === panes.topics ) {
                 slideToMessages( selectedElem );
               }
             }
@@ -259,10 +251,9 @@
         }
 
         function reply(evt) {
-          if(currentMode === modes.messages) {
-            var pane = $( getPaneSelectorFromCurrentMode() );
-            var selectedElem = pane.find('.selected');
-            if( selectedElem.length !== 0 ) {
+          if( session.currentPane() === panes.messages ) {
+            var selectedElem = getSelectedElementOnCurrentPane();
+            if( selectedElem ) {
               var replyToUserHandle = '@' + selectedElem.find('.creator-username').text() + ' ';
               $('#msg-form textarea').focus().val( replyToUserHandle );
               evt.preventDefault();
@@ -271,27 +262,22 @@
         }
 
         function message(evt) {
-          if(currentMode === modes.messages) {
+          if( session.currentPane() === panes.messages ) {
             $('#msg-form textarea').focus();
             evt.preventDefault();
-            var pane = $( getPaneSelectorFromCurrentMode() );
-            var selectedElem = pane.find('.selected');
-            if( selectedElem.length !== 0 ) {
+            var selectedElem = getSelectedElementOnCurrentPane();
+            if( selectedElem ) {
               selectedElem.removeClass('selected');
             }
           }
         }
 
         function enter(evt) {
-          if(currentMode === modes.messages) {
+          if( session.currentPane() === panes.messages ) {
             var msg = $('#msg-form textarea').val();
-
-            console.log( 'Topic id: ' + session.selectedTopic().id );
-
             if( $.trim(msg) !== '' ) {
               // Create a message object send it and add it to the list on success.
             }
-
             $('#msg-form textarea').blur(); // Make it loose focus.
           }
         }
@@ -300,17 +286,20 @@
           console.log('opening in convore site');
         }
 
+        function star(evt) {
+          if( session.currentPane() === panes.messages ) {
+            var selectedElem = getSelectedElementOnCurrentPane();
+            if( selectedElem ) {
+
+            }
+          }
+        }
+
         function help(evt) {
           helpToggle()
         }
 
         return {
-
-          modes: modes,
-
-          setMode: function(newMode) {
-            currentMode = newMode;
-          },
 
           bind: function() {
 
@@ -323,7 +312,7 @@
               }
 
               // When the user is writing a message, all keyboard shorcuts should be bypassed.
-              if( $('#msg-form textarea').is(':focus') && currentMode === modes.messages && keyCode !== keyMap.enter ) {
+              if( $('#msg-form textarea').is(':focus') && session.currentPane() === panes.messages && keyCode !== keyMap.enter ) {
                 return;
               }
 
@@ -355,6 +344,10 @@
 
                 case keyMap.m:
                   message(evt);
+                  break;
+
+                case keyMap.s:
+                  star(evt);
                   break;
 
                 case keyMap.enter:

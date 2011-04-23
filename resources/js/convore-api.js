@@ -108,4 +108,15 @@ function ConvoreAPI( authCxt ) {
       callback.call(this, data.mentions, data.unread );
     });
   }
+
+  self.postMessage = function( topicId , message , callback ) {
+    var url = convoreApiUrl + '/topics/' + topicId + '/messages/create.json';
+    $.post(url, {message: message}, function(data) {
+      callback.call( this , data );
+    });
+  }
+
+  self.starMessage = function( msgId , callback ) {
+    var url = convoreApiUrl + '/messages/' + msgId + '/star.json';
+  }
 }

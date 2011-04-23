@@ -71,15 +71,31 @@
         showMainPane();
       }
 
+      // TODO(fcarriedo): Refactor this UI behaviors into more consistent units. Eg. 'click behavior', etc.
       function initUiBehaviors() {
         keyboardActions.bind();
 
-        $('div.group, div.topic').live('mouseover mouseout', function(event) {
+        $('#messages-pane .info-box').live('mouseover mouseout', function(event) {
           if (event.type == 'mouseover') {
-            $(this).addClass('clickable');
+            $(this).find('.actions').show();
           } else {
-            $(this).removeClass('clickable');
+            $(this).find('.actions').hide();
           }
+        });
+
+        $('.info-box').live('click', function(event) {
+          var selectedElem = getSelectedElementOnCurrentPane();
+          if( selectedElem ) {
+            selectedElem.removeClass('selected');
+          }
+          $(this).addClass('selected');
+
+          if( session.currentPane() === panes.groups ) {
+            slideToTopics( $(this) );
+          } else if( session.currentPane() === panes.topics ) {
+            slideToMessages( $(this) );
+          }
+
         });
       }
 
@@ -97,8 +113,8 @@
         $('#notifications-pane').fadeIn();
         $('#logout').fadeIn();
         convoreApi.fetchGroups(function(groups) {
-          console.log(groups);
-          $('#groups-pane .content-box').html( $('#group-tmpl').tmpl(groups) );
+          //console.log(groups);
+          $('#groups-pane .content-box').html( $('#group-tmpl').tmpl( groups ) );
         });
       }
 
@@ -122,7 +138,7 @@
 
         session.currentPane( panes.topics );
 
-        $('#full-pane').animate({"left": "-=350px"}, "normal");
+        $('#full-pane').animate({"left": "-=350px"}, "fast");
 
         var groupId = $(elem).attr('id').split('-')[1];
         var groupTitle =  $(elem).find('.info').text();
@@ -132,8 +148,8 @@
 
         $('#topics-group-title').text( group.text );
 
-        convoreApi.fetchGroupTopics( groupId , function(topics) {
-          $('#topics-pane .content-box').html( $('#topic-tmpl').tmpl(topics) );
+        convoreApi.fetchGroupTopics( groupId , function( topics ) {
+          $('#topics-pane .content-box').html( $('#topic-tmpl').tmpl( topics ) );
         });
       }
 
@@ -144,7 +160,7 @@
 
         session.currentPane( panes.messages );
 
-        $('#full-pane').animate({"left": "-=350px"}, "normal");
+        $('#full-pane').animate({"left": "-=350px"}, "fast");
 
         var topicId = $(elem).attr('id').split('-')[1];
         var topicTitle = $(elem).find('.info').text();
@@ -154,8 +170,8 @@
 
         $('#messages-topic-title').text( topic.text );
 
-        convoreApi.fetchTopicMessages( topicId , function(messages) {
-          $('#messages-pane .content-box').html( $('#message-tmpl').tmpl(messages) );
+        convoreApi.fetchTopicMessages( topicId , function( messages ) {
+          $('#messages-pane .content-box').html( $('#message-tmpl').tmpl( messages ) );
 
           // We linkify all rendered messages.
           $('#messages-pane .info-box .info').each( function(index) {
@@ -168,10 +184,10 @@
         session.currentPane( pane );
 
         // Make sure that the msg form is cleared
-        $('#msg-form textarea').val('');
+        cleanMessageTextArea();
         $('#msg-form textarea').blur();
 
-        $('#full-pane').animate({"left": "+=350px"}, "normal");
+        $('#full-pane').animate({"left": "+=350px"}, "fast");
       }
 
       function setLoadingMsg(pane) {
@@ -181,6 +197,34 @@
 
       function helpToggle() {
         $('#help-overlay').toggle();
+      }
+
+      function initReplyTo( username ) {
+        var replyToUserHandle = '@' + username + ' ';
+        $('#msg-form textarea').focus().val( replyToUserHandle );
+      }
+
+      function cleanMessageTextArea() {
+        $('#msg-form textarea').val('');
+      }
+
+      function postMessageToTopic() {
+        var msg = $('#msg-form textarea').val();
+        if( $.trim(msg) !== '' ) {
+          var topicId = session.selectedTopic()['id'];
+          convoreApi.postMessage( topicId , msg , function( message ) {
+            message.message = linkUtils.linkify( message.message );
+            getCurrentContentPane().append( $('#message-tmpl').tmpl( message ) );
+            cleanMessageTextArea();
+          });
+        }
+      }
+
+      function starMessage( msgId ) {
+        convoreApi.starMessage( msgId , function( star ) {
+          // Add a star to the UI.
+          // console.log('stared msg id : ' + msgId + '. The data: ' + JSON.stringify(data) );
+        });
       }
 
       /* Gets the content box of the current pane */
@@ -254,8 +298,8 @@
           if( session.currentPane() === panes.messages ) {
             var selectedElem = getSelectedElementOnCurrentPane();
             if( selectedElem ) {
-              var replyToUserHandle = '@' + selectedElem.find('.creator-username').text() + ' ';
-              $('#msg-form textarea').focus().val( replyToUserHandle );
+              var replyToUser = selectedElem.find('.creator-username').text();
+              initReplyTo( replyToUser );
               evt.preventDefault();
             }
           }
@@ -274,10 +318,7 @@
 
         function enter(evt) {
           if( session.currentPane() === panes.messages ) {
-            var msg = $('#msg-form textarea').val();
-            if( $.trim(msg) !== '' ) {
-              // Create a message object send it and add it to the list on success.
-            }
+            postMessageToTopic();
             $('#msg-form textarea').blur(); // Make it loose focus.
           }
         }
@@ -290,7 +331,8 @@
           if( session.currentPane() === panes.messages ) {
             var selectedElem = getSelectedElementOnCurrentPane();
             if( selectedElem ) {
-
+              var msgId = selectedElem.attr('id').split('-')[1];
+              starMessage( msgId );
             }
           }
         }
@@ -452,7 +494,7 @@
           <div id='msg-form'>
             <div><img title='You!'/></div>
             <div><textarea id='new-message'></textarea></div>
-            <div><a href='#' id='submit' onClick=''>Submit</a></div>
+            <div><a href='#' id='submit' onClick='postMessageToTopic()'>Submit</a></div>
           </div>
 
         </div>
@@ -469,7 +511,7 @@
 
     <!-- Groups template -->
     <script id='group-tmpl' type=text/x-jquery-tmpl'>
-      <div id='group-${id}' class='info-box' onClick='slideToTopics( this )'>
+      <div id='group-${id}' class='info-box'>
         <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
         <div class='info-container'>
           <div class='info'>${name}</div>
@@ -480,7 +522,7 @@
 
     <!-- Topics template -->
     <script id='topic-tmpl' type=text/x-jquery-tmpl'>
-      <div id='topic-${id}' class='info-box' onClick='slideToMessages( this )'>
+      <div id='topic-${id}' class='info-box'>
         <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
         <div class='info-container'>
           <div class='info'>${name}</div>
@@ -494,8 +536,14 @@
       <div id='message-${id}' class='info-box'>
         <div class='pic'><img src='${user.img}' title='${user.username}'/></div>
         <div class='info-container'>
-          <div class='info'>${message}</div>
-          <div class='small metadata'>by <span class='creator-username'>${user.username}</span></div>
+          <div class='info'>{{html message}}</div>
+          <div class='small metadata'>
+            by <span class='creator-username'>${user.username}</span>
+            <span class='actions'> -
+              <a href='#' onClick='starMessage( ${id} )'>star</a> 
+              <a href='#' onClick='initReplyTo("${user.username}")'>reply</a>
+            </span>
+          </div>
         </div>
       </div>
     </script>
@@ -525,8 +573,9 @@
 
           <h4>Actions</h4>
 
-          <b>m</b> - Write a message (messages pane)<br/>
-          <b>r</b> - Reply to 'selected' message (messages pane)<br/>
+          <b>m</b> - Write a msg (msgs pane)<br/>
+          <b>r</b> - Reply to 'selected' msg (msgs pane)<br/>
+          <b>s</b> - Stars/Unstars 'selected' msg (msgs pane)<br/>
         </div>
       </div>
     </div>

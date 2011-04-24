@@ -126,6 +126,14 @@ function doLogout() {
 function retrieveCredentials() {
   var auth = datastore.get('convore.auth');
   if( auth ) {
+
+    try {
+      auth = atob( auth );
+    } catch( err ) {
+      datastore.clear();
+      return null;
+    }
+
     var authParts = auth.split(':');
     var usr = authParts[0];
     var pswd = authParts[1];
@@ -139,7 +147,7 @@ function removeCredentials() {
 }
 
 function persistCredentials(username, password) {
-  datastore.save('convore.auth', username + ':' + password);
+  datastore.save('convore.auth', btoa( username+':'+password ) );
 }
 
 /** ======================================

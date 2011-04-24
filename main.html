@@ -92,15 +92,15 @@
       function initUiBehaviors() {
         keyboardActions.bind();
 
-        $('#messages-pane .info-box').live('mouseover mouseout', function(event) {
-          if (event.type == 'mouseover') {
+        $('.info-box').live('mouseover mouseout', function(evt) {
+          if (evt.type == 'mouseover') {
             $(this).find('.actions').show();
           } else {
             $(this).find('.actions').hide();
           }
         });
 
-        $('.info-box').live('click', function(event) {
+        $('.info-box').live('click', function(evt) {
           var selectedElem = getSelectedElementOnCurrentPane();
           if( selectedElem ) {
             selectedElem.removeClass('selected');
@@ -216,6 +216,7 @@
         var topic = {id: topicId, text: topicTitle};
         session.selectedTopic( topic );
 
+
         $('#messages-topic-title').text( topic.text );
 
         convoreApi.fetchTopicMessages( topicId , function( messages ) {
@@ -226,6 +227,13 @@
             $(this).html( linkUtils.linkify( $(this).html() ) );
           });
         });
+
+        // Mark all messages from this topic as read.
+        setTimeout( function() {
+          convoreApi.markTopicAllRead( topicId , function( data ) {
+            $( '#topic-' + topicId + ' .unread-count' ).text(0);
+          });
+        }, 150 );
       }
 
       function scrollBackTo( pane ) {
@@ -272,6 +280,22 @@
           // console.log('stared msg id : ' + msgId + '. The data: ' + JSON.stringify(data) );
         });
       }
+
+
+      /**
+      function markAllRead( id ) {
+        if( session.currentPane() === panes.groups ) {
+          convoreApi.markGroupAllRead( id , function( data ) {
+            $( '#group-' + id + ' .unread-count' ).text(0);
+          });
+        } else if( session.currentPane() === panes.topics ) {
+          convoreApi.markTopicAllRead( id , function( data ) {
+            $( '#topic-' + id + ' .unread-count' ).text(0);
+          });
+        }
+      }
+      */
+
 
       /* Gets the content box of the current pane */
       function getCurrentContentPane() {
@@ -590,7 +614,14 @@
         <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
         <div class='info-container'>
           <div class='info'>${name}</div>
-          <div class='small metadata'>Topics: ${topics_count}</div>
+          <div class='small metadata'>
+            Topics: ${topics_count} - <b class='unread-count'>${unread}</b> <i>unread</i>
+            <!--
+            <span class='actions'> -
+              <a href='#' onClick='markAllRead( ${id} )'>mark all read</a> 
+            </span>
+            -->
+          </div>
         </div>
       </div>
     </script>
@@ -601,7 +632,14 @@
         <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
         <div class='info-container'>
           <div class='info'>${name}</div>
-          <div class='small metadata'>Total messages: ${message_count} - <b>${unread}</b> unread</i></div>
+          <div class='small metadata'>
+            Total messages: ${message_count} - <b class='unread-count'>${unread}</b> <i>unread</i>
+            <!--
+            <span class='actions'> -
+              <a href='#' onClick='markAllRead( ${id} )'>mark all read</a> 
+            </span>
+            -->
+          </div>
         </div>
       </div>
     </script>

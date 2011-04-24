@@ -169,8 +169,14 @@ div.info-box div.info-container div.info {
 .info-box:hover {
   background-color: #ccccff;
 }
+.info-box .actions {
+  display: none;
+}
 #groups-pane .info-box:hover, #topics-pane .info-box:hover {
   cursor: hand;
+}
+#groups-pane .info {
+  font-weight: bold;
 }
 #groups-pane .pic img {
   width: 24px;
@@ -200,9 +206,6 @@ div.info-box div.info-container div.info {
 #messages-pane .info-box .info img {
   max-width: 270px;
   margin: 5px;
-}
-#messages-pane .info-box .actions {
-  display: none;
 }
 
 

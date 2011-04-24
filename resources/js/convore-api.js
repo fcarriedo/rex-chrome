@@ -90,6 +90,15 @@ function ConvoreAPI( authCxt ) {
     });
   }
 
+  // https://convore.com/api/#group-mark-read
+  // Mark all messages in the group as read.
+  self.markGroupAllRead = function( groupId , callback ) {
+    var url = convoreApiUrl + '/groups/' + groupId + '/mark_read.json';
+    $.post(url, function(data) {
+      callback.call( this , data );
+    });
+  }
+
   self.fetchTopicMessages = function( topicId , callback ) {
     var url = convoreApiUrl + '/topics/' + topicId + '/messages.json';
     $.getJSON(url, function(data) {
@@ -97,6 +106,18 @@ function ConvoreAPI( authCxt ) {
     });
   }
 
+  // https://convore.com/api/#topic-mark-read
+  // Mark all messages in a topic as read.
+  self.markTopicAllRead = function( topicId , callback ) {
+    var url = convoreApiUrl + '/topics/' + topicId + '/mark_read.json';
+    $.post(url, function(data) {
+      callback.call( this , data );
+    });
+  }
+
+  // https://convore.com/api/#messages
+  // Gets a list of direct message conversations for the current user.
+  // 
   // TODO(fcarriedo): Mmmm naming kind of inconsistent (are they private
   // messages or conversations or just plain messages?) Rename.
   self.fetchPrivateConversations = function( callback ) {

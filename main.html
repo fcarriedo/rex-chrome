@@ -289,6 +289,8 @@
           if( session.selectedTopic()['id'] === msg.topic.id ) {
             msg.message = linkUtils.linkify( msg.message );
             getCurrentContentPane().append( $('#message-tmpl').tmpl( msg ) );
+            // Scroll the window accordingly.
+            $( '#message-' + msg.id ).get(0).scrollIntoView(false);
           }
         }
       }
@@ -319,9 +321,14 @@
           if( !selectedElem ) {
             getCurrentContentPane().children('.info-box').first().addClass('selected');
           } else {
-            var nextElem = selectedElem.next();
             selectedElem.removeClass('selected');
+
+            var nextElem = selectedElem.next();
+            if( nextElem.length === 0 ) {  // If the selected element is the last, we jump to the first.
+              nextElem = selectedElem.siblings('.info-box').first();
+            }
             nextElem.addClass('selected');
+            nextElem.get(0).scrollIntoView(false);
           }
         }
 
@@ -330,9 +337,14 @@
           if( !selectedElem ) {
             getCurrentContentPane().children('.info-box').last().addClass('selected');
           } else {
-            var previousElem = selectedElem.prev();
             selectedElem.removeClass('selected');
+
+            var previousElem = selectedElem.prev();
+            if( previousElem.length === 0 ) {  // If the selected element is the first, we jump to the last.
+              previousElem = selectedElem.siblings('.info-box').last();
+            }
             previousElem.addClass('selected');
+            previousElem.get(0).scrollIntoView(false);
           }
         }
 

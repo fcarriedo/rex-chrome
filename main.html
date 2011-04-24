@@ -226,6 +226,9 @@
           $('#messages-pane .info-box .info').each( function(index) {
             $(this).html( linkUtils.linkify( $(this).html() ) );
           });
+
+          // Start to read messages from the bottom (chat like).
+          $('#messages-pane .info-box').last().get(0).scrollIntoView(false);
         });
 
         // Mark all messages from this topic as read.

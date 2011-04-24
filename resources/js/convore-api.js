@@ -66,7 +66,9 @@ function ConvoreAPI( authCxt ) {
     var url = convoreApiUrl + '/live.json';
     setTimeout(function() {  // For non-blocknig the first time since long polls.
       $.getJSON(url, function(data) {
-        callback.call(this, data.messages);
+        if( data && data.messages ) {
+          callback.call(this, data.messages);
+        }
         // Calls itself again ad infinitum. (Long polling encouraged [see api docs]).
         // Reconnects as fast as the browser allows.
         setTimeout( function() { self.listenToLiveFeed(callback); }, 0 ); 

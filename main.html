@@ -238,6 +238,23 @@
         return selectedElem.length !== 0 ? selectedElem : null;
       }
 
+      function addMessageRealTime( msg ) {
+        if( session.currentPane() === panes.messages ) {
+          if( session.selectedTopic()['id'] === msg.topic.id ) {
+            msg.message = linkUtils.linkify( msg.message );
+            getCurrentContentPane().append( $('#message-tmpl').tmpl( msg ) );
+          }
+        }
+      }
+
+      function addTopicRealTime( topic ) {
+        if( session.currentPane() === panes.topics ) {
+          if( session.selectedGroup()['id'] === topic.group ) {
+            getCurrentContentPane().prepend( $('#topic-tmpl').tmpl( topic ) );
+          }
+        }
+      }
+
      /** ======================================
       *   Keyboard bindings
       *  ======================================

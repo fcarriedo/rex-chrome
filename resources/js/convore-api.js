@@ -97,17 +97,19 @@ function ConvoreAPI( authCxt ) {
     });
   }
 
-  self.fetchConversations = function( callback ) {
-    var url = convoreApiUrl + '/topics/' + topicId + '/messages.json';
+  // TODO(fcarriedo): Mmmm naming kind of inconsistent (are they private
+  // messages or conversations or just plain messages?) Rename.
+  self.fetchPrivateConversations = function( callback ) {
+    var url = convoreApiUrl + '/messages.json';
     $.getJSON(url, function(data) {
-      callback.call(this, data.messages );
+      callback.call(this, data.conversations );
     });
   }
 
   self.fetchMentions = function( callback ) {
     var url = convoreApiUrl + '/account/mentions.json';
     $.getJSON(url, function(data) {
-      callback.call(this, data.mentions, data.unread );
+      callback.call(this, data.unread , data.mentions );
     });
   }
 

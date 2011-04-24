@@ -61,6 +61,7 @@ div.badge div.badge-text {
   font-family: monospace;
   top: 0px;
   right: 0px;
+  display: none;
 }
 #header #header-bottom {
   font-size: 75%;

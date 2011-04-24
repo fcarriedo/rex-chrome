@@ -52,7 +52,9 @@
               var body = '"' + msg.message + '" - ' + msg.user.username;
               var url = '/messages/' + msg.user.username;
               showSimpleNotification(url, title, body);
+
               badgeUtils.addUnreadPrivateMessage();
+              incrementUiMessagesBadge();
             }
           }
         });
@@ -70,7 +72,9 @@
                 var body = '"' + msg.message + '" - ' +  msg.user.username;
                 var url = '/mentions';
                 showSimpleNotification(url, title, body);
+
                 badgeUtils.addUnreadMention();
+                incrementUiMentionsBadge();
               }
             }
           }
@@ -91,6 +95,9 @@
         });
       }
 
+
+      /** Interaction with UI utils. **/
+
       function postToUiRealTime(msg) {
         var popup = getPopupView();
         if( popup ) {
@@ -101,6 +108,21 @@
           }
         }
       }
+
+      function incrementUiMessagesBadge() {
+        var popup = getPopupView();
+        if( popup ) {
+          popup.incrementBadgeCount( popup.badges.messages );
+        }
+      }
+
+      function incrementUiMentionsBadge() {
+        var popup = getPopupView();
+        if( popup ) {
+          popup.incrementBadgeCount( popup.badges.mentions );
+        }
+      }
+
 
       // Start the background service.
       startBgService();

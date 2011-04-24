@@ -69,6 +69,23 @@
         badgeUtils.clearBadge();
 
         showMainPane();
+
+        // After showing the main pane, we bootstrap the mentions and
+        // private messages to update the badges.
+        setTimeout( function() {
+          // Fetch unread mentions
+          convoreApi.fetchMentions( function(unread) {
+            setBadgeCount( badges.mentions , unread );
+          });
+          // Fetch unread private messages
+          convoreApi.fetchPrivateConversations( function(conversations) {
+            var unreadPrivateMsgs = 0;
+            for(var i=0; i<conversations.length; i++ ) {
+              unreadPrivateMsgs += conversations[i].unread;
+            }
+            setBadgeCount( badges.messages , unreadPrivateMsgs );
+          });
+        }, 150 );
       }
 
       // TODO(fcarriedo): Refactor this UI behaviors into more consistent units. Eg. 'click behavior', etc.
@@ -126,6 +143,37 @@
       function clearLoginForm() {
         $('#usr').val('');
         $('#pswd').val('');
+      }
+
+      /** =============================
+       *   Mentions and messages badge utils.
+       *  =============================
+       */
+
+      var badges = {mentions: 'mentions', messages: 'messages'};
+
+      function incrementBadgeCount( badge ) {
+        setBadgeCount( badge , getBadgeCount( badge ) + 1 );
+      }
+      function decrementBadgeCount( badge ) {
+        setBadgeCount( badge , getBadgeCount( badge ) - 1 );
+      }
+      function setBadgeCount( badge , count ) {
+        var badgeElem = $( '#' + badge + '-badge-text' );
+        if( count <= 0 ) {
+          badgeElem.hide();
+          badgeElem.text(0);
+        } else {
+          badgeElem.text( count );
+          badgeElem.show();
+        }
+      }
+      function getBadgeCount( badge ) {
+        var badgeCount = $( '#' + badge + '-badge-text' ).text();
+        return badgeCount.trim() === '' ? 0 : parseInt( badgeCount );
+      }
+      function clearBadgeCount( badge ) {
+        setBadgeCount( badge , 0 );
       }
 
 
@@ -442,11 +490,11 @@
         </div>
         <div id="notifications-pane">
           <div class="badge">
-            <div id='mentions-badge-text' class="badge-text">15</div>
+            <div id='mentions-badge-text' class="badge-text"></div>
             <a href='#' onClick='openInConvore("/mentions")' title='mentions'><img src='resources/images/mention.png'></a>
           </div>
           <div class="badge">
-            <div id='messages-badge-text' class="badge-text">7</div>
+            <div id='messages-badge-text' class="badge-text"></div>
             <a href='#' onClick='openInConvore("/messages")' title='messages'><img src='resources/images/message.png' title='messages'></a>
           </div>
         </div>

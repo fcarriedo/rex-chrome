@@ -210,6 +210,7 @@
 
         $('#full-pane').animate({"left": "-=350px"}, "fast");
 
+
         var topicId = $(elem).attr('id').split('-')[1];
         var topicTitle = $(elem).find('.info').text();
 
@@ -273,7 +274,11 @@
           var topicId = session.selectedTopic()['id'];
           convoreApi.postMessage( topicId , msg , function( message ) {
             cleanMessageTextArea();
+            $('#msg-form textarea').focus();
           });
+        } else {
+          cleanMessageTextArea();
+          $('#msg-form textarea').blur();
         }
       }
 
@@ -421,7 +426,6 @@
         function enter(evt) {
           if( session.currentPane() === panes.messages ) {
             postMessageToTopic();
-            $('#msg-form textarea').blur(); // Make it loose focus.
           }
         }
 

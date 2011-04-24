@@ -213,8 +213,6 @@
         if( $.trim(msg) !== '' ) {
           var topicId = session.selectedTopic()['id'];
           convoreApi.postMessage( topicId , msg , function( message ) {
-            message.message = linkUtils.linkify( message.message );
-            getCurrentContentPane().append( $('#message-tmpl').tmpl( message ) );
             cleanMessageTextArea();
           });
         }

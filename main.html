@@ -114,6 +114,7 @@
           }
 
         });
+
       }
 
       function showLoginPage() {
@@ -230,6 +231,14 @@
 
           // Start to read messages from the bottom (chat like).
           $('#messages-pane .info-box').last().get(0).scrollIntoView(false);
+
+          // When there are images on the message, make sure the scrolling stays at the bottom.
+          // (Solves issue #35)
+          // $(selector).live('load') doesn't seem to be supported soo we have to attach the events here.
+          // See: http://api.jquery.com/live/ & http://forum.jquery.com/topic/add-support-for-load-and-ready-events-in-live
+          $('#messages-pane .info img').load( function() {
+            $('#messages-pane .info-box').last().get(0).scrollIntoView(false);
+          });
         });
 
         // Mark all messages from this topic as read.
@@ -238,6 +247,7 @@
             $( '#topic-' + topicId + ' .unread-count' ).text(0);
           });
         }, 150 );
+
       }
 
       function scrollBackTo( pane ) {

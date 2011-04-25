@@ -30,12 +30,9 @@ body {
   );
   -webkit-box-shadow: 0px 3px 15px #888;
 }
-#header #rex-logo {
-  width: 28px;
+#header img#rex-header {
+  height: 48px;
   padding: 3px 0px 0px 4px;
-}
-#header #subtitle {
-  padding-left: 4px;
 }
 #header > div {
   display: -webkit-box;

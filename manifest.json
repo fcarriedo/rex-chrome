@@ -3,14 +3,14 @@
   "version": "0.9.2",
   "description": "A Convore Chrome Extension.",
   "icons": {
-    "16": "resources/images/rex128.png",
-    "48": "resources/images/rex128.png",
+    "16": "resources/images/rex16.png",
+    "48": "resources/images/rex48.png",
     "128": "resources/images/rex128.png"
   },
   "background_page": "background.html",
   "browser_action": {
     "popup": "main.html",
-    "default_icon": "resources/images/rex.png"
+    "default_icon": "resources/images/rex48.png"
   },
   "permissions": [
     "tabs",

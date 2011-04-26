@@ -16,10 +16,14 @@ body {
   );
 }
 
+/* General elements behavior */
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
 #header {
   color: white;
   display: -webkit-box;
-  -webkit-box-orient: vertical;
+  height: 55px;
   background-image: -webkit-gradient(
     linear,
     left bottom,
@@ -30,13 +34,21 @@ body {
   );
   -webkit-box-shadow: 0px 3px 15px #888;
 }
+#header a {
+  color: #666;
+}
+#header a:hover {
+  color: #3D3DFF;
+  text-decoration: none;
+}
 #header img#rex-header {
   height: 48px;
   padding: 3px 0px 0px 4px;
 }
-#header > div {
+#header #header-right {
   display: -webkit-box;
-  -webkit-box-orient: horizontal;
+  -webkit-box-orient: vertical;
+  -webkit-box-flex: 1;
   padding: 1px;
 }
 #header #notifications-pane {
@@ -47,9 +59,6 @@ body {
 }
 #header #notifications-pane img {
   width: 22px;
-}
-#header .shadow-text {
-  text-shadow: 2px 2px 2px #000;
 }
 div.badge {
   position: relative;
@@ -67,15 +76,11 @@ div.badge div.badge-text {
   right: 0px;
   display: none;
 }
-#header #header-bottom {
+#header #header-actions {
   font-size: 75%;
-}
-#header #logout {
   text-align: right;
-  -webkit-box-flex: 1;
+  margin: 0px 10px 3px 0px
 }
-
-
 
 /* Content Panes */
 #main-view-pane {

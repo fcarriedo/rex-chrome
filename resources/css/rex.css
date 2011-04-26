@@ -205,11 +205,12 @@ div.info-box div.info-container div.info {
   width: 31px;
 }
 #topics-pane .info {
-  font-size: 85%;
+  font-size: 80%;
   font-weight: bold;
 }
 #topics-pane .pic img {
-  width: 20px;
+  padding-top: 2px;
+  width: 25px;
 }
 #groups-pane .info-box > div, #topics-pane .info-box > div {
   padding: 3px;

@@ -93,6 +93,7 @@
       function initUiBehaviors() {
         keyboardActions.bind();
 
+
         $('.info-box').live('mouseover mouseout', function(evt) {
           if (evt.type == 'mouseover') {
             $(this).find('.actions').show();
@@ -134,6 +135,8 @@
         convoreApi.fetchGroups(function(groups) {
           //console.log(groups);
           $('#groups-pane .content-box').html( $('#group-tmpl').tmpl( groups ) );
+
+          parseTimestamps();
         });
       }
 
@@ -200,6 +203,7 @@
 
         convoreApi.fetchGroupTopics( groupId , function( topics ) {
           $('#topics-pane .content-box').html( $('#topic-tmpl').tmpl( topics ) );
+          parseTimestamps();
         });
       }
 
@@ -232,6 +236,7 @@
 
           // Start to read messages from the bottom (chat like).
           $('#messages-pane .info-box').last().get(0).scrollIntoView(false);
+          parseTimestamps();
 
           // When there are images on the message, make sure the scrolling stays at the bottom.
           // (Solves issue #35)
@@ -268,6 +273,11 @@
 
       function helpToggle() {
         $('#help-overlay').toggle();
+      }
+
+      function parseTimestamps() {
+        // Parse all timestamps with timeago
+        $('abbr.timeago').timeago();
       }
 
       function initReplyTo( username ) {
@@ -334,6 +344,7 @@
             getCurrentContentPane().append( $('#message-tmpl').tmpl( msg ) );
             // Scroll the window accordingly.
             $( '#message-' + msg.id ).get(0).scrollIntoView(false);
+            parseTimestamps();
           }
         }
       }
@@ -342,6 +353,7 @@
         if( session.currentPane() === panes.topics ) {
           if( session.selectedGroup()['id'] === topic.group ) {
             getCurrentContentPane().prepend( $('#topic-tmpl').tmpl( topic ) );
+            parseTimestamps();
           }
         }
       }
@@ -554,7 +566,7 @@
         </div>
         <div id="header-actions">
           <div id="logout" style='display: none'>
-            <a href='#' onClick='helpToggle()'>?</a> | <a href='#' onClick='logout()'>logout</a>
+            <a href='#' onClick='helpToggle()'>?</a> | <a href='#' onClick='logout()'>logout</a></abbr>
           </div>
         </div>
       </div>
@@ -622,7 +634,6 @@
 
 
 
-
     <!-- jQuery template definitions (groups, topics, messages, users, etc.) -->
 
     <!-- Groups template -->
@@ -632,7 +643,8 @@
         <div class='info-container'>
           <div class='info'>${name}</div>
           <div class='small metadata'>
-            Topics: ${topics_count} - <b class='unread-count'>${unread}</b> <i>unread</i>
+            <span class='unread' {{if unread === 0}}style='display: none;'{{/if}}><span class='unread-count'>${unread}</span> unread - </span>
+            active <abbr class='timeago' title='${ toISODate(date_latest_message) }'></abbr>
             <!--
             <span class='actions'> -
               <a href='#' onClick='markAllRead( ${id} )'>mark all read</a> 
@@ -650,7 +662,9 @@
         <div class='info-container'>
           <div class='info'>${name}</div>
           <div class='small metadata'>
-            Total messages: ${message_count} - <b class='unread-count'>${unread}</b> <i>unread</i>
+            ${message_count} msgs -
+            <span class='unread' {{if unread === 0}}style='display: none;'{{/if}}><span class='unread-count'>${unread}</span> unread - </span>
+            active <abbr class='timeago' title='${ toISODate(date_latest_message) }'></abbr>
             <!--
             <span class='actions'> -
               <a href='#' onClick='markAllRead( ${id} )'>mark all read</a> 
@@ -668,7 +682,8 @@
         <div class='info-container'>
           <div class='info'>{{html message}}</div>
           <div class='small metadata'>
-            by <span class='creator-username'>${user.username}</span>
+            <span class='creator-username'>${user.username}</span>
+            <abbr class='timeago' title='${ toISODate(date_created) }'></abbr>
             <span class='actions'> -
               <a href='#' onClick='starMessage( ${id} )'>star</a> 
               <a href='#' onClick='initReplyTo("${user.username}")'>reply</a>

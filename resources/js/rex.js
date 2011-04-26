@@ -299,3 +299,12 @@ var badgeUtils = function() {
 jQuery.expr[':'].focus = function( elem ) {
   return elem === document.activeElement && ( elem.type || elem.href );
 };
+
+/** ======================================
+ *   Timestamp formatting utils
+ *  ======================================
+ */
+function toISODate( convoreTimestamp ) {
+  var millis = Math.round( convoreTimestamp*1000 ); // Convert their timestamp to millis.
+  return new Date( millis ).toISOString();
+}

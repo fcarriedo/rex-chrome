@@ -119,7 +119,7 @@
 
       function showLoginPage() {
         $('#main-view-pane').hide();
-        $('#notifications-pane').hide();
+        $('#notifications-pane .badge').hide();
         $('#login').fadeIn();
         $('#logout').hide();
       }
@@ -128,7 +128,7 @@
         clearLoginForm();
         $('#login').hide();
         $('#main-view-pane').fadeIn();
-        $('#notifications-pane').fadeIn();
+        $('#notifications-pane .badge').fadeIn();
         $('#logout').fadeIn();
         convoreApi.fetchGroups(function(groups) {
           //console.log(groups);
@@ -560,12 +560,12 @@
     </div>
 
     <!-- Login pane -->
-    <div id='login' style='display: none'><br/>
-      <div id='login-err' class='small error'></div>
+    <div id='login' style='display: none'>
       <table>
+        <tr><td id='login-err' class='small error' colspan='2'></td></tr>
         <tr><td>Username:</td><td><input id='usr' type='text'/></td></tr>
         <tr><td>Password:</td><td><input id='pswd' type='password'/></td></tr>
-        <tr><td colspan='2'><button onClick='login()'>Login</button></td></tr>
+        <tr><td colspan='2' style='text-align: right;'><button onClick='login()'>Login</button></td></tr>
       </table>
     </div>
 

@@ -35,7 +35,7 @@ a:hover { text-decoration: underline; }
   -webkit-box-shadow: 0px 3px 15px #888;
 }
 #header a {
-  color: #666;
+  color: #777;
 }
 #header a:hover {
   color: #3D3DFF;
@@ -63,6 +63,7 @@ a:hover { text-decoration: underline; }
 div.badge {
   position: relative;
   margin: 5px 10px 0px 0px;
+  display: none;
 }
 div.badge div.badge-text {
   background-color: darkred;
@@ -80,6 +81,14 @@ div.badge div.badge-text {
   font-size: 75%;
   text-align: right;
   margin: 0px 10px 3px 0px
+}
+
+#login {
+  padding: 15px 0px 0px 40px;
+}
+#login #login-err {
+  text-align: right;
+  height: 20px;
 }
 
 /* Content Panes */
@@ -243,7 +252,7 @@ div.info-box div.info-container div.info {
   border: 2px solid #ccc;
   padding: 10px;
   position: absolute;
-  top: 95px;
+  top: 70px;
   left: 45px;
   background-color: #efefef;
   display: -webkit-box;

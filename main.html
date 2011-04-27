@@ -235,7 +235,8 @@
           });
 
           // Start to read messages from the bottom (chat like).
-          $('#messages-pane .info-box').last().get(0).scrollIntoView(false);
+          var lastMsg = $('#messages-pane .info-box').last();
+          scrollIntoView( lastMsg );
           parseTimestamps();
 
           // When there are images on the message, make sure the scrolling stays at the bottom.
@@ -243,7 +244,7 @@
           // $(selector).live('load') doesn't seem to be supported soo we have to attach the events here.
           // See: http://api.jquery.com/live/ & http://forum.jquery.com/topic/add-support-for-load-and-ready-events-in-live
           $('#messages-pane .info img').load( function() {
-            $('#messages-pane .info-box').last().get(0).scrollIntoView(false);
+            scrollIntoView( lastMsg );
           });
         });
 
@@ -254,6 +255,9 @@
           });
         }, 150 );
 
+      }
+
+      function setTopicUnreadCount( topicId , count ) {
       }
 
       function scrollBackTo( pane ) {
@@ -278,6 +282,10 @@
       function parseTimestamps() {
         // Parse all timestamps with timeago
         $('abbr.timeago').timeago();
+      }
+
+      function scrollIntoView( elem ) {
+        elem.get(0).scrollIntoView(false);
       }
 
       function initReplyTo( username ) {
@@ -343,7 +351,8 @@
             msg.message = linkUtils.linkify( msg.message );
             getCurrentContentPane().append( $('#message-tmpl').tmpl( msg ) );
             // Scroll the window accordingly.
-            $( '#message-' + msg.id ).get(0).scrollIntoView(false);
+            var newMsg = $( '#message-' + msg.id );
+            scrollIntoView( newMsg );
             parseTimestamps();
           }
         }
@@ -374,7 +383,9 @@
         function down(evt) {
           var selectedElem = getSelectedElementOnCurrentPane();
           if( !selectedElem ) {
-            getCurrentContentPane().children('.info-box').first().addClass('selected');
+            var firstElem = getCurrentContentPane().children('.info-box').first();
+            firstElem.addClass('selected');
+            scrollIntoView( firstElem );
           } else {
             selectedElem.removeClass('selected');
 
@@ -383,14 +394,16 @@
               nextElem = selectedElem.siblings('.info-box').first();
             }
             nextElem.addClass('selected');
-            nextElem.get(0).scrollIntoView(false);
+            scrollIntoView( nextElem );
           }
         }
 
         function up(evt) {
           var selectedElem = getSelectedElementOnCurrentPane();
           if( !selectedElem ) {
-            getCurrentContentPane().children('.info-box').last().addClass('selected');
+            var lastElem = getCurrentContentPane().children('.info-box').last().addClass('selected');
+            lastElem.addClass('selected');
+            scrollIntoView( lastElem );
           } else {
             selectedElem.removeClass('selected');
 
@@ -399,7 +412,7 @@
               previousElem = selectedElem.siblings('.info-box').last();
             }
             previousElem.addClass('selected');
-            previousElem.get(0).scrollIntoView(false);
+            scrollIntoView( previousElem );
           }
         }
 

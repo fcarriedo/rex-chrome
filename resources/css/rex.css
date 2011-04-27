@@ -32,7 +32,6 @@ a:hover { text-decoration: underline; }
     color-stop(0.53, rgb(29,29,31)),
     color-stop(0.77, rgb(43,42,51))
   );
-  -webkit-box-shadow: 0px 3px 15px #888;
 }
 .unread {
   color: red;
@@ -117,13 +116,16 @@ div.badge div.badge-text {
   background-color: #fafafa;
 }
 div.content-pane div.title {
-  background-color: lightyellow;
+  background-color: #FFF9CF;
   border-bottom: thin solid orange;
-  padding: 2px;
+  display: -webkit-box;
+  -webkit-box-shadow: 0px 2px 2px #ccc;
+  padding: 4px;
 }
 div.content-pane div.back-link {
   font-size: 70%;
   color: #999;
+  padding: 4px;
   text-align: right;
 }
 div.content-pane div.content-box {

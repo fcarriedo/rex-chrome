@@ -10,6 +10,7 @@ function ConvoreAPI( authCxt ) {
   }
 
   var convoreApiUrl = 'https://convore.com/api';
+  var liveCursor = null;
 
   var self = this;
 
@@ -65,8 +66,14 @@ function ConvoreAPI( authCxt ) {
   self.listenToLiveFeed = function( callback ) {
     var url = convoreApiUrl + '/live.json';
     setTimeout(function() {  // For non-blocknig the first time since long polls.
-      $.getJSON(url, function(data) {
+      $.getJSON(url, {cursor: self.liveCursor}, function(data) {
+
         if( data && data.messages ) {
+          if( data.messages.length > 0 ) {
+            self.liveCursor = data.messages[0]._id // TODO(fcarriedo): Check if safe to grab the 1st elem _id.
+          }
+
+          // Perform the callback.
           callback.call(this, data.messages);
         }
         // Calls itself again ad infinitum. (Long polling encouraged [see api docs]).

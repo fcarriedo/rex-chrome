@@ -117,6 +117,7 @@ div.badge div.badge-text {
   background-color: #fafafa;
 }
 div.content-pane div.title {
+  font-weight: bold;
   background-color: #FFF9CF;
   border-bottom: thin solid orange;
   display: -webkit-box;

@@ -353,9 +353,17 @@
 
       function starMessage( msgId ) {
         convoreApi.starMessage( msgId , function( star ) {
-          // Add a star to the UI.
-          // console.log('stared msg id : ' + msgId + '. The data: ' + JSON.stringify(data) );
+          toggleStarInMsg( msgId );
         });
+      }
+
+      function toggleStarInMsg( msgId ) {
+        var msgStarElem = $('#message-' + msgId + ' .star');
+        if( msgStarElem.find('img').length === 0 ) {
+          msgStarElem.html('<img src="resources/images/star.png"/>');
+        } else {
+          msgStarElem.html('');
+        }
       }
 
       /*
@@ -739,8 +747,9 @@
           <div class='small metadata'>
             <span class='creator-username'>${user.username}</span>
             <abbr class='timeago' title='${ toISODate(date_created) }'></abbr>
+            <span class='star'>{{if stars.length > 0}} <img src='resources/images/star.png'/> {{/if}}</span>
             <span class='actions'> -
-              <a href='#' onClick='starMessage( ${id} )'>star</a> 
+              <a href='#' onClick='starMessage( ${id} )'><img src='resources/images/star-empty.png'/></a> 
               <a href='#' onClick='initReplyTo("${user.username}")'>reply</a>
             </span>
           </div>

@@ -234,6 +234,9 @@ div.info-box div.info-container div.info {
   max-width: 270px;
   margin: 5px;
 }
+#messages-pane .star img {
+  width: 9px;
+}
 
 
 /* Generic styles */

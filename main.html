@@ -360,7 +360,7 @@
       function toggleStarInMsg( msgId ) {
         var msgStarElem = $('#message-' + msgId + ' .star');
         if( msgStarElem.find('img').length === 0 ) {
-          msgStarElem.html('<img src="resources/images/star.png"/>');
+          msgStarElem.html('- <span class="star-count">1</span><img src="resources/images/star.png"/>');
         } else {
           msgStarElem.html('');
         }
@@ -747,7 +747,7 @@
           <div class='small metadata'>
             <span class='creator-username'>${user.username}</span>
             <abbr class='timeago' title='${ toISODate(date_created) }'></abbr>
-            <span class='star'>{{if stars.length > 0}} <img src='resources/images/star.png'/> {{/if}}</span>
+            <span class='star'>{{if stars.length > 0}} - <span class='star-count'>${stars.length}</span><img src='resources/images/star.png'/> {{/if}}</span>
             <span class='actions'> -
               <a href='#' onClick='starMessage( ${id} )'><img src='resources/images/star-empty.png'/></a> 
               <a href='#' onClick='initReplyTo("${user.username}")'>reply</a>

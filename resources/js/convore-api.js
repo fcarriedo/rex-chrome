@@ -151,7 +151,7 @@ function ConvoreAPI( authCxt ) {
   self.starMessage = function( msgId , callback ) {
     var url = convoreApiUrl + '/messages/' + msgId + '/star.json';
     $.post(url, function(data) {
-      callback.call( this , data.star );
+      callback.call( this , data );
     });
   }
 }

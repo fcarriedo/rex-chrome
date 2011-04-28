@@ -123,7 +123,7 @@
         $('#main-view-pane').hide();
         $('#notifications-pane .badge').hide();
         $('#login').fadeIn();
-        $('#logout').hide();
+        $('#header-actions').hide();
       }
 
       function showMainPane() {
@@ -131,7 +131,7 @@
         $('#login').hide();
         $('#main-view-pane').fadeIn();
         $('#notifications-pane .badge').fadeIn();
-        $('#logout').fadeIn();
+        $('#header-actions').fadeIn();
         convoreApi.fetchGroups(function(groups) {
           //console.log(groups);
           $('#groups-pane .content-box').html( $('#group-tmpl').tmpl( groups ) );
@@ -182,6 +182,49 @@
       }
 
 
+      function setTopicUnreadCount( id , unreadCount ) {
+        var unreadCountElem = $( '#topic-' + id + ' .unread-count' );
+        var unreadElem = $( '#topic-' + id + ' .unread' );
+        if( unreadCount <= 0 ) {
+          unreadElem.hide();
+          unreadCountElem.text(0);
+        } else {
+          unreadCountElem.text( unreadCount );
+          unreadElem.show();
+        }
+      }
+      function getTopicUnreadCount( id ) {
+        var unreadCount = $('#topic-' + id + ' .unread-count').text();
+        return unreadCount.trim() === '' ? 0 : parseInt( unreadCount );
+      }
+
+      function setGroupUnreadCount( id , unreadCount ) {
+        var unreadCountElem = $( '#group-' + id + ' .unread-count' );
+        var unreadElem = $( '#group-' + id + ' .unread' );
+        if( unreadCount <= 0 ) {
+          unreadElem.hide();
+          unreadCountElem.text(0);
+        } else {
+          unreadCountElem.text( unreadCount );
+          unreadElem.show();
+        }
+      }
+      function getGroupUnreadCount( id ) {
+        var unreadCount = $('#group-' + id + ' .unread-count').text();
+        return unreadCount.trim() === '' ? 0 : parseInt( unreadCount );
+      }
+
+
+      /* Cascades in the UI all the way up to groups */
+      function markTopicAllRead( topicId ) {
+          var topicUnreadCount = getTopicUnreadCount( topicId );
+
+          var selectedGroupId = session.selectedGroup()['id'];
+          var groupUnreadCount = getGroupUnreadCount( selectedGroupId );
+
+          setTopicUnreadCount( topicId , 0 ); // We set it to 0.
+          setGroupUnreadCount( selectedGroupId , groupUnreadCount - topicUnreadCount );
+      }
 
       // TODO(fcarriedo): Do a $('#container').scrollTo('#id');
       // Slide to
@@ -251,13 +294,10 @@
         // Mark all messages from this topic as read.
         setTimeout( function() {
           convoreApi.markTopicAllRead( topicId , function( data ) {
-            $( '#topic-' + topicId + ' .unread-count' ).text(0);
+            markTopicAllRead( topicId );
           });
         }, 150 );
 
-      }
-
-      function setTopicUnreadCount( topicId , count ) {
       }
 
       function scrollBackTo( pane ) {
@@ -318,21 +358,25 @@
         });
       }
 
-
-      /**
+      /*
       function markAllRead( id ) {
         if( session.currentPane() === panes.groups ) {
           convoreApi.markGroupAllRead( id , function( data ) {
-            $( '#group-' + id + ' .unread-count' ).text(0);
+            setGroupUnreadCount( id , 0 );
           });
         } else if( session.currentPane() === panes.topics ) {
           convoreApi.markTopicAllRead( id , function( data ) {
-            $( '#topic-' + id + ' .unread-count' ).text(0);
+            var topicUnreadCount = getTopicUnreadCount( id );
+
+            var selectedGroupId = session.selectedGroup()['id'];
+            var groupUnreadCount = getGroupUnreadCount( selectedGroupId );
+
+            setTopicUnreadCount( id , 0 ); // We set it to 0.
+            setGroupUnreadCount( selectedGroupId , groupUnreadCount - topicUnreadCount );
           });
         }
       }
       */
-
 
       /* Gets the content box of the current pane */
       function getCurrentContentPane() {
@@ -577,10 +621,8 @@
             <a href='#' onClick='openInConvore("/messages")' title='messages'><img src='resources/images/message.png' title='messages'></a>
           </div>
         </div>
-        <div id="header-actions">
-          <div id="logout" style='display: none'>
-            <a href='#' onClick='helpToggle()'>?</a> | <a href='#' onClick='logout()'>logout</a></abbr>
-          </div>
+        <div id="header-actions" style='display: none;'>
+          <a href='#' onClick='helpToggle()'>?</a> | <a href='#' onClick='logout()'>logout</a></abbr>
         </div>
       </div>
     </div>
@@ -652,7 +694,7 @@
     <!-- Groups template -->
     <script id='group-tmpl' type=text/x-jquery-tmpl'>
       <div id='group-${id}' class='info-box'>
-        <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
+        <div class='pic'><img src='${creator.img}' title='Created by @${creator.username}'/></div>
         <div class='info-container'>
           <div class='info'>${name}</div>
           <div class='small metadata'>
@@ -671,7 +713,7 @@
     <!-- Topics template -->
     <script id='topic-tmpl' type=text/x-jquery-tmpl'>
       <div id='topic-${id}' class='info-box'>
-        <div class='pic'><img src='${creator.img}' title='${creator.username}'/></div>
+        <div class='pic'><img src='${creator.img}' title='Created by @${creator.username}'/></div>
         <div class='info-container'>
           <div class='info'>${name}</div>
           <div class='small metadata'>

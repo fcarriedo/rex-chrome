@@ -81,6 +81,7 @@ div.badge div.badge-text {
   display: none;
 }
 #header #header-actions {
+  color: #888;
   font-size: 75%;
   text-align: right;
   margin: 0px 10px 3px 0px
@@ -263,7 +264,7 @@ div.info-box div.info-container div.info {
   position: absolute;
   top: 70px;
   left: 45px;
-  background-color: #efefef;
+  background-color: #f8f8f8;
   display: -webkit-box;
   -webkit-box-orient: vertical;
 }

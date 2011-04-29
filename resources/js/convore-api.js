@@ -148,6 +148,20 @@ function ConvoreAPI( authCxt ) {
     });
   }
 
+  self.createNewGroup = function( newGroup , callback ) {
+    var url = convoreApiUrl + '/groups/create.json';
+    $.post(url, {name: newGroup.name, kind: newGroup.kind }, function(data) {
+      callback.call( this , data.group );
+    });
+  }
+
+  self.createNewTopic = function( groupId , newTopic , callback ) {
+    var url = convoreApiUrl + '/groups/' + groupId + '/topics/create.json';
+    $.post(url, {name: newTopic.name}, function(data) {
+      callback.call( this , data.topic );
+    });
+  }
+
   self.starMessage = function( msgId , callback ) {
     var url = convoreApiUrl + '/messages/' + msgId + '/star.json';
     $.post(url, function(data) {

@@ -66,19 +66,26 @@ function ConvoreAPI( authCxt ) {
   self.listenToLiveFeed = function( callback ) {
     var url = convoreApiUrl + '/live.json';
     setTimeout(function() {  // For non-blocknig the first time since long polls.
-      $.getJSON(url, {cursor: self.liveCursor}, function(data) {
+      $.ajax({
+        url: url,
+        dataType: 'json',
+        data: {cursor: self.liveCursor},
+        success: function(data) {
+          if( data && data.messages ) {
+            if( data.messages.length > 0 ) {
+              self.liveCursor = data.messages[0]._id // TODO(fcarriedo): Check if safe to grab the 1st elem _id.
+            }
 
-        if( data && data.messages ) {
-          if( data.messages.length > 0 ) {
-            self.liveCursor = data.messages[0]._id // TODO(fcarriedo): Check if safe to grab the 1st elem _id.
+            // Perform the callback.
+            callback.call(this, data.messages);
           }
-
-          // Perform the callback.
-          callback.call(this, data.messages);
+          // Calls itself again ad infinitum. (Long polling encouraged [see api docs]).
+          // Reconnects as fast as the browser allows.
+          setTimeout( function() { self.listenToLiveFeed(callback); }, 0 );
+        },
+        error: function( xmlHttpRequest ) {
+          setTimeout( function() { self.listenToLiveFeed(callback); }, 3000 ); // We try again after 3 seconds.
         }
-        // Calls itself again ad infinitum. (Long polling encouraged [see api docs]).
-        // Reconnects as fast as the browser allows.
-        setTimeout( function() { self.listenToLiveFeed(callback); }, 0 ); 
       });
     }, 0);
   }

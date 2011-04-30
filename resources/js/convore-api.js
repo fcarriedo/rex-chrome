@@ -72,8 +72,9 @@ function ConvoreAPI( authCxt ) {
         data: {cursor: self.liveCursor},
         success: function(data) {
           if( data && data.messages ) {
-            if( data.messages.length > 0 ) {
-              self.liveCursor = data.messages[0]._id // TODO(fcarriedo): Check if safe to grab the 1st elem _id.
+            var msgsLength = data.messages.length;
+            if( msgsLength > 0 ) {
+              self.liveCursor = data.messages[msgsLength-1]._id // TODO(fcarriedo): Check if best to grab the last elem _id.
             }
 
             // Perform the callback.
@@ -84,6 +85,7 @@ function ConvoreAPI( authCxt ) {
           setTimeout( function() { self.listenToLiveFeed(callback); }, 0 );
         },
         error: function( xmlHttpRequest ) {
+          self.liveCursor = null; // TODO(fcarriedo): We should set it to null on an errorCode basis.
           setTimeout( function() { self.listenToLiveFeed(callback); }, 3000 ); // We try again after 3 seconds.
         }
       });

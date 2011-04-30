@@ -43,7 +43,7 @@
 
       function setUpListeners(usrDetails) {
 
-        /* Messages listener */
+        /* Private messages listener */
         liveFeedObserver.addListener( function(messages) {
           for(var i=0; i<messages.length; i++ ) {
             var msg = messages[i];
@@ -59,17 +59,24 @@
           }
         });
 
-        /* Mentions listener */
+        /* Messages listener */
         liveFeedObserver.addListener( function(messages) {
           for(var i=0; i<messages.length; i++ ) {
             var msg = messages[i];
             if( msg.kind === 'message') {
               postToUiRealTime( msg );
-              // TODO(fcarriedo): Refactor. Expensive to create RegEx obj per msg.
-              var usrHandleRegex = new RegExp("(^|[^a-zA-Z])(@" + usrDetails.username + ")([^a-zA-Z]|$)", 'i');
-              if( usrHandleRegex.test(msg.message) ) {
+            }
+          }
+        });
+
+        /* Mentions listener */
+        liveFeedObserver.addListener( function(messages) {
+          for(var i=0; i<messages.length; i++ ) {
+            var msg = messages[i];
+            if( msg.kind === 'mention') {
+              if( msg.mentioned_user.username === usrDetails.username ) {
                 var title = 'New Mention';
-                var body = '"' + msg.message + '" - ' +  msg.user.username;
+                var body = '"' + msg.message.message + '" - ' +  msg.user.username;
                 var url = '/mentions';
                 showSimpleNotification(url, title, body);
 
@@ -103,7 +110,7 @@
         if( popup ) {
           if( msg.kind === 'message' ) {
             popup.addMessageRealTime(msg);
-          } else if( msg.kind === 'topic' ) {
+            } else if( msg.kind === 'topic' ) {
             popup.addTopicRealTime(msg);
           }
         }

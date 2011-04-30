@@ -1,0 +1,58 @@
+body {
+  font-family: helvetica, arial, freesans, clean, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  color: #333;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right bottom,
+    color-stop(0.05, rgb(255,255,255)),
+    color-stop(0.53, rgb(216,216,232)),
+    color-stop(0.77, rgb(220,220,224))
+  );
+}
+
+#settings-content {
+  padding: 25px;
+}
+#settings-content p {
+  padding-left: 25px;
+}
+
+h1 {
+  color: white;
+  font-size: 150%;
+  padding: 10px;
+  vertical-align: top;
+  border-bottom: 1px solid orange;
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    right bottom,
+    color-stop(0.05, rgb(10,10,10)),
+    color-stop(0.53, rgb(29,29,31)),
+    color-stop(0.77, rgb(43,42,51))
+  );
+  -webkit-box-shadow: 0px 4px 4px #ccc;
+}
+
+h3 {
+  padding: 10px 0px 10px 0px;
+  border-bottom: 1px solid #aaa;
+}
+
+#success-msg {
+  font-size: 80%;
+  color: darkgreen;
+  background-color: lightgreen;
+  border-radius: 15px;
+  border: 1px solid darkgreen;
+  text-align: center;
+  width: 200px;
+  margin-left: -100px;
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  padding: 5px;
+}

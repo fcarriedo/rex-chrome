@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="resources/css/options.css" type="text/css" media="screen"/>
+    <script type="text/javascript" src='resources/js/jquery.min.js'></script>
+    <script type="text/javascript" src='resources/js/rex.js'></script>
+    <script type="text/javascript">
+      $(document).ready( initUi );
+
+      function initUi() {
+        var tabsMode = datastore.get('settings.tabs.mode') || 'open_in_existing_convore_tab';
+        var notificationsMode = datastore.get('settings.notifications.mode') || 'only_when_convore_window_unfocused';
+
+        $('#' + tabsMode).attr('checked', true);
+        $('#' + notificationsMode).attr('checked', true);
+      }
+
+      function saveSettings() {
+        var tabsMode = $('input[name=tabs]:checked').val();
+        var notificationsMode = $('input[name=notifications]:checked').val();
+
+        datastore.save('settings.tabs.mode', tabsMode);
+        datastore.save('settings.notifications.mode', notificationsMode);
+
+        $('#success-msg').show();
+        setTimeout( function() { $('#success-msg').fadeOut(); }, 3000);
+      }
+    </script>
+    <title>rex settings</title>
+  </head>
+  <body>
+
+    <h1><img src='resources/images/rex.png'/> Settings</h1>
+
+    <div id='settings-content'>
+
+      <div id='success-msg' style='display: none;'>settings successfully saved</div>
+
+      <h3>Tabs</h3>
+      <p>
+        Please specify the tabbing behavior for <b>convore</b> links:<br/><br/>
+        <input id='open_in_existing_convore_tab' type='radio' name='tabs' value='open_in_existing_convore_tab'> Open in existing <b>convore</b> tab <br/>
+        <input id='always_new_tab' type='radio' name='tabs' value='always_new_tab'> Always open in new tab
+      </p>
+
+      <h3>Desktop Notifications</h3>
+      <p>
+        Please specify the notifications behavior:<br/><br/>
+        <input id='only_when_convore_window_unfocused' type='radio' name='notifications' value='only_when_convore_window_unfocused'> Show only when <b>convore</b> window non focused or non existent <br/>
+        <input id='always' type='radio' name='notifications' value='always'> Always show notifications <br/>
+        <input id='never' type='radio' name='notifications' value='never'> Silence notifications (Shhhhh!)
+      </p>
+
+      <br/>
+      <div id='save-controls'>
+        <button onClick='saveSettings()'>Save</button>
+      </div>
+
+    </div>
+
+  </body>
+</html>

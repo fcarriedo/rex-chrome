@@ -1,6 +1,6 @@
 {
   "name": "Rex",
-  "version": "0.9.7.4",
+  "version": "0.9.7.5",
   "description": "A Convore Chrome Extension.",
   "icons": {
     "16": "resources/images/rex16.png",
@@ -8,6 +8,7 @@
     "128": "resources/images/rex128.png"
   },
   "background_page": "background.html",
+  "options_page": "options.html",
   "browser_action": {
     "popup": "main.html",
     "default_icon": "resources/images/rex48.png"

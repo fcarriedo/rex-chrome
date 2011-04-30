@@ -1,7 +1,7 @@
 // Global objects:
 // TODO(fcarriedo): Refactor this objects out of the global scope.
 var convoreUrl = 'https://convore.com';
-var convoreUrlRegex = new RegExp('(^' + convoreUrl + ')', 'g');
+var convoreUrlRegex = new RegExp('(^' + convoreUrl + ')', '');
 
 // The convoreApi object
 var convoreApi;
@@ -255,7 +255,8 @@ function showSimpleNotification(url, title, body) {
   } else if( notificationsMode === 'only_when_convore_window_unfocused' ) {
     chrome.windows.getCurrent( function( currentWindow ) {
       chrome.tabs.getSelected( currentWindow.id, function(tab) {
-        if( !convoreUrlRegex.test( tab.url ) ) {
+        var isFocusedTabConvore = convoreUrlRegex.test( tab.url );
+        if( !isFocusedTabConvore ) {
           createNotification( url, title, body);
         }
       });

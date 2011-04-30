@@ -217,6 +217,7 @@
 
       /* Cascades in the UI all the way up to groups */
       function markTopicAllRead( topicId ) {
+        convoreApi.markTopicAllRead( topicId , function( data ) {
           var topicUnreadCount = getTopicUnreadCount( topicId );
 
           var selectedGroupId = session.selectedGroup()['id'];
@@ -224,6 +225,15 @@
 
           setTopicUnreadCount( topicId , 0 ); // We set it to 0.
           setGroupUnreadCount( selectedGroupId , groupUnreadCount - topicUnreadCount );
+        });
+      }
+
+      function markGroupAllRead( groupId ) {
+        if( session.currentPane() === panes.groups ) {
+          convoreApi.markGroupAllRead( groupId , function( data ) {
+            setGroupUnreadCount( groupId , 0 );
+          });
+        }
       }
 
       // TODO(fcarriedo): Do a $('#container').scrollTo('#id');
@@ -293,9 +303,7 @@
 
         // Mark all messages from this topic as read.
         setTimeout( function() {
-          convoreApi.markTopicAllRead( topicId , function( data ) {
-            markTopicAllRead( topicId );
-          });
+          markTopicAllRead( topicId );
         }, 150 );
 
       }
@@ -366,25 +374,6 @@
         }
       }
 
-      /*
-      function markAllRead( id ) {
-        if( session.currentPane() === panes.groups ) {
-          convoreApi.markGroupAllRead( id , function( data ) {
-            setGroupUnreadCount( id , 0 );
-          });
-        } else if( session.currentPane() === panes.topics ) {
-          convoreApi.markTopicAllRead( id , function( data ) {
-            var topicUnreadCount = getTopicUnreadCount( id );
-
-            var selectedGroupId = session.selectedGroup()['id'];
-            var groupUnreadCount = getGroupUnreadCount( selectedGroupId );
-
-            setTopicUnreadCount( id , 0 ); // We set it to 0.
-            setGroupUnreadCount( selectedGroupId , groupUnreadCount - topicUnreadCount );
-          });
-        }
-      }
-      */
 
       /* Gets the content box of the current pane */
       function getCurrentContentPane() {
@@ -429,7 +418,7 @@
         var keyMap = {
           up: 38, down: 40, left: 37, right: 39, help: 63,
           h: 104, j: 106, k: 107, l: 108, m: 109, r: 114, o: 111, s: 115,
-          enter: 13
+          x: 120, enter: 13
         };
 
         function down(evt) {
@@ -521,6 +510,20 @@
           console.log('opening in convore site');
         }
 
+        function markRead(evt) {
+          if( session.currentPane() !== panes.messages ) {
+            var selectedElem = getSelectedElementOnCurrentPane();
+            if( selectedElem ) {
+              var id = selectedElem.attr('id').split('-')[1];
+              if( session.currentPane() === panes.groups ) {
+                markGroupAllRead( id );
+              } else if( session.currentPane() === panes.topics ) {
+                markTopicAllRead( id );
+              }
+            }
+          }
+        }
+
         function star(evt) {
           if( session.currentPane() === panes.messages ) {
             var selectedElem = getSelectedElementOnCurrentPane();
@@ -592,6 +595,10 @@
 
                 case keyMap.o:
                   open(evt);
+                  break;
+
+                case keyMap.x:
+                  markRead(evt);
                   break;
 
                 case keyMap.help: // '?'
@@ -710,7 +717,7 @@
             active <abbr class='timeago' title='${ toISODate(date_latest_message) }'></abbr>
             <!--
             <span class='actions'> -
-              <a href='#' onClick='markAllRead( ${id} )'>mark all read</a> 
+              <a href='#' class='mark-read' title='mark all read' onClick='markTopicAllRead( ${id} )'>read</a> 
             </span>
             -->
           </div>
@@ -730,7 +737,7 @@
             active <abbr class='timeago' title='${ toISODate(date_latest_message) }'></abbr>
             <!--
             <span class='actions'> -
-              <a href='#' onClick='markAllRead( ${id} )'>mark all read</a> 
+              <a href='#' class='mark-read' title='mark all read' onClick='markGroupAllRead( ${id} )'>read</a> 
             </span>
             -->
           </div>
@@ -785,6 +792,7 @@
           <b>m</b> - Write a msg (msgs pane)<br/>
           <b>r</b> - Reply to 'selected' msg (msgs pane)<br/>
           <b>s</b> - Stars/Unstars 'selected' msg (msgs pane)<br/>
+          <b>x</b> - Mark the 'selected' topic/group as read<br/>
           <b>?</b> - Show/Hide help popup<br/>
         </div>
         <div id='contact-info'>

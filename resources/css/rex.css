@@ -254,6 +254,10 @@ div.info-box div.info-container div.info {
   color: #555;
 }
 
+.mark-read {
+  text-decoration: line-through;
+}
+
 #help-overlay {
   position: absolute;
   width: 100%;

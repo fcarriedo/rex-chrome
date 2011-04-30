@@ -248,7 +248,7 @@ var datastore = function(storage) {
  */
 
 function showSimpleNotification(url, title, body) {
-  var notificationsMode = datastore('settings.notifications.mode') || 'only_when_convore_window_unfocused';
+  var notificationsMode = datastore.get('settings.notifications.mode') || 'only_when_convore_window_unfocused';
 
   if( notificationsMode === 'always' ) {
     createNotification( url , title , body );

@@ -1,6 +1,7 @@
 // Global objects:
 // TODO(fcarriedo): Refactor this objects out of the global scope.
 var convoreUrl = 'https://convore.com';
+var convoreUrlRegex = new RegExp('(^' + convoreUrl + ')', 'g');
 
 // The convoreApi object
 var convoreApi;
@@ -11,8 +12,31 @@ var convoreApi;
  */
 function openInConvore(relativePath) {
   var url = convoreUrl + relativePath;
-  // TODO(fcarriedo): Search open tabs, open in existing 'convore' (if).
-  openInNewTab(url);
+
+  var tabsMode = datastore.get('settings.tabs.mode')  || 'open_in_existing_convore_tab';
+
+  if( tabsMode === 'always_new_tab' ) {
+    openInNewTab(url);
+  } else {
+    // Opening in existing convore tab (if exists).
+    chrome.windows.getCurrent( function( currentWindow ) {
+      chrome.tabs.getAllInWindow( currentWindow.id, function(tabs) {
+        var openingTabId = -1;
+
+        for (var i = 0; i < tabs.length; i++) {
+          if( convoreUrlRegex.test( tabs[i].url ) ) {
+            openingTabId = tabs[i].id;
+          }
+        }
+
+        if( openingTabId > 0 ) {
+          chrome.tabs.update( openingTabId , {url: url, selected: true}, function(tab) {} );
+        } else {
+          openInNewTab(url);
+        }
+      });
+    });
+  }
 }
 
 /** ======================================
@@ -224,6 +248,25 @@ var datastore = function(storage) {
  */
 
 function showSimpleNotification(url, title, body) {
+  var notificationsMode = datastore('settings.notifications.mode') || 'only_when_convore_window_unfocused';
+
+  if( notificationsMode === 'always' ) {
+    createNotification( url , title , body );
+  } else if( notificationsMode === 'only_when_convore_window_unfocused' ) {
+    chrome.windows.getCurrent( function( currentWindow ) {
+      chrome.tabs.getSelected( currentWindow.id, function(tab) {
+        if( !convoreUrlRegex.test( tab.url ) ) {
+          createNotification( url, title, body);
+        }
+      });
+    });
+  } else {
+    // The only remaining option is 'never' so it doesn't create a notification.
+  }
+
+}
+
+function createNotification(url, title, body) {
   var notification = webkitNotifications.createNotification('resources/images/rex.png', title, body);
   notification.onclick = function() { openInConvore(url); };
   notification.show();

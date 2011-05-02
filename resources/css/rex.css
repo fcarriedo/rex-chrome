@@ -295,7 +295,7 @@ div.info-box div.info-container div.info {
 }
 
 .color-hightlight-start {
-  background-color: orange;
+  background-color: #F7A752;
   -webkit-transition: background-color 2500ms linear;
 }
 .color-hightlight-end {

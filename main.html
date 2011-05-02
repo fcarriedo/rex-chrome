@@ -288,10 +288,11 @@
           });
 
           // Do a color transition on the new elements.
-          // TODO(fcarriedo): Find a way to refine it since all this timeouts suck!
+          // TODO(fcarriedo): Find a way to refine it since all this feels unelegant!
           var unreadCount = getTopicUnreadCount( topicId );
           var unreadIndex = $('#messages-pane .info-box').length - unreadCount -1;
-          var newElems = $('#messages-pane .info-box:gt(' + unreadIndex + ')' );
+          var newElemsSelector = unreadIndex<0 ? '#messages-pane .info-box' : '#messages-pane .info-box:gt(' + unreadIndex + ')';
+          var newElems = $( newElemsSelector );
           execColorTransition( newElems );
 
           // Start to read messages from the bottom (chat like).
@@ -325,7 +326,7 @@
             elemsToAnimate.removeClass('color-hightlight-start');
             elemsToAnimate.removeClass('color-hightlight-end');
           }, 2500);
-        }, 0);
+        }, 500);
       }
 
       function scrollBackTo( pane ) {

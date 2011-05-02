@@ -293,3 +293,11 @@ div.info-box div.info-container div.info {
   text-align: right;
   padding-top: 15px;
 }
+
+.color-hightlight-start {
+  background-color: orange;
+  -webkit-transition: background-color 2500ms linear;
+}
+.color-hightlight-end {
+  background-color: #fafafa;
+}

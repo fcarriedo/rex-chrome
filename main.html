@@ -287,6 +287,13 @@
             $(this).html( linkUtils.linkify( $(this).html() ) );
           });
 
+          // Do a color transition on the new elements.
+          // TODO(fcarriedo): Find a way to refine it since all this timeouts suck!
+          var unreadCount = getTopicUnreadCount( topicId );
+          var unreadIndex = $('#messages-pane .info-box').length - unreadCount -1;
+          var newElems = $('#messages-pane .info-box:gt(' + unreadIndex + ')' );
+          execColorTransition( newElems );
+
           // Start to read messages from the bottom (chat like).
           var lastMsg = $('#messages-pane .info-box').last();
           scrollIntoView( lastMsg );
@@ -306,6 +313,19 @@
           markTopicAllRead( topicId );
         }, 150 );
 
+      }
+
+      function execColorTransition( elemsToAnimate ) {
+        elemsToAnimate.addClass('color-hightlight-start');
+        setTimeout( function() {
+          elemsToAnimate.addClass('color-hightlight-end');
+
+          // Wait until the transition ends and then remove the classes.
+          setTimeout( function() {
+            elemsToAnimate.removeClass('color-hightlight-start');
+            elemsToAnimate.removeClass('color-hightlight-end');
+          }, 2500);
+        }, 0);
       }
 
       function scrollBackTo( pane ) {
@@ -333,7 +353,9 @@
       }
 
       function scrollIntoView( elem ) {
-        elem.get(0).scrollIntoView(false);
+        if( elem && elem.length>0 ) {
+          elem.get(0).scrollIntoView(false);
+        }
       }
 
       function initReplyTo( username ) {
@@ -349,8 +371,8 @@
         var msg = $('#msg-form textarea').val();
         if( $.trim(msg) !== '' ) {
           var topicId = session.selectedTopic()['id'];
+          cleanMessageTextArea();
           convoreApi.postMessage( topicId , msg , function( message ) {
-            cleanMessageTextArea();
             $('#msg-form textarea').focus();
           });
         } else {
@@ -392,8 +414,8 @@
             msg.message = linkUtils.linkify( msg.message );
             getCurrentContentPane().append( $('#message-tmpl').tmpl( msg ) );
             // Scroll the window accordingly.
-            var newMsg = $( '#message-' + msg.id );
-            scrollIntoView( newMsg );
+            var newMsgElem = $( '#message-' + msg.id );
+            scrollIntoView( newMsgElem );
             parseTimestamps();
           }
         }
@@ -402,8 +424,13 @@
       function addTopicRealTime( topic ) {
         if( session.currentPane() === panes.topics ) {
           if( session.selectedGroup()['id'] === topic.group ) {
-            getCurrentContentPane().prepend( $('#topic-tmpl').tmpl( topic ) );
+            topic.unread = 0;
+            topic.message_count = 0;
+
+            var newTopicElem = $('#topic-tmpl').tmpl( topic );
+            getCurrentContentPane().prepend( newTopicElem );
             parseTimestamps();
+            execColorTransition( newTopicElem );
           }
         }
       }
@@ -503,6 +530,7 @@
         function enter(evt) {
           if( session.currentPane() === panes.messages ) {
             postMessageToTopic();
+            evt.preventDefault();
           }
         }
 

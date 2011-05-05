@@ -272,6 +272,7 @@
 
         var topicId = $(elem).attr('id').split('-')[1];
         var topicTitle = $(elem).find('.info').text();
+        var unreadCount = getTopicUnreadCount( topicId );
 
         var topic = {id: topicId, text: topicTitle};
         session.selectedTopic( topic );
@@ -289,7 +290,6 @@
 
           // Do a color transition on the new elements.
           // TODO(fcarriedo): Find a way to refine it since all this feels unelegant!
-          var unreadCount = getTopicUnreadCount( topicId );
           var unreadIndex = $('#messages-pane .info-box').length - unreadCount -1;
           var newElemsSelector = unreadIndex<0 ? '#messages-pane .info-box' : '#messages-pane .info-box:gt(' + unreadIndex + ')';
           var newElems = $( newElemsSelector );

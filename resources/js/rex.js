@@ -57,6 +57,8 @@ var linkUtils = function() {
   var usrHandleRegex = /@([a-z]|[0-9]|[_])+/gi;
   // Images URLs regex.
   var imagesUrlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+(\.png|\.jpg|\.jpeg|\.gif))/gi;
+  // Youtube URLs regex.
+  var youtubeUrlRegex = /(http:\/\/www.youtube.com\/+([\w\-\/?=&])*)/gi;
 
   return {
 
@@ -93,7 +95,21 @@ var linkUtils = function() {
         imgLinks.push("<a href='#' onClick=\"openInNewTab('" + matchArray[0] + "')\"><img src='" + matchArray[0] + "'/></a>" );
       }
       if( imgLinks.length !== 0 ) {
-        str += '<br/>' + imgLinks.join('<br/>')
+        str += '<br/>' + imgLinks.join('<br/>');
+      }
+
+      // Create a video iframe element for every youtube video on a string.
+      // Videos will appear after the message.
+      var youtubeLinks = [];
+      while( (matchArray = youtubeUrlRegex.exec(origStr) ) != null ) {
+        var videoId = matchArray[0].match( /(v=[\w\-]+)/ );
+        if( videoId ) {
+          videoId = videoId[0].substring( 'v='.length );
+          youtubeLinks.push('<iframe width="300" src="http://www.youtube.com/embed/' + videoId + '?autohide=1&showinfo=0&rel=0" frameborder="0" allowfullscreen></iframe>');
+        }
+      }
+      if( youtubeLinks.length !== 0 ) {
+        str += '<br/>' + youtubeLinks.join('<br/>');
       }
 
       return str;

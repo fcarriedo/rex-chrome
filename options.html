@@ -9,17 +9,25 @@
       function initUi() {
         var tabsMode = datastore.get('settings.tabs.mode') || 'open_in_existing_convore_tab';
         var notificationsMode = datastore.get('settings.notifications.mode') || 'only_when_convore_window_unfocused';
+        var displayImagesInline = datastore.get('settings.display.images') || 'true';
+        var displayYouTubeInline = datastore.get('settings.display.youtube' || 'true');
 
         $('#' + tabsMode).attr('checked', true);
         $('#' + notificationsMode).attr('checked', true);
+        $('input#show_images_inline').attr('checked', displayImagesInline == 'true');
+        $('input#show_youtube_inline').attr('checked', displayYouTubeInline == 'true');
       }
 
       function saveSettings() {
         var tabsMode = $('input[name=tabs]:checked').val();
         var notificationsMode = $('input[name=notifications]:checked').val();
+        var displayImagesInline = $('input#show_images_inline').is(':checked');
+        var displayYouTubeInline = $('input#show_youtube_inline').is(':checked');
 
         datastore.save('settings.tabs.mode', tabsMode);
         datastore.save('settings.notifications.mode', notificationsMode);
+        datastore.save('settings.display.images', displayImagesInline);
+        datastore.save('settings.display.youtube', displayYouTubeInline);
 
         $('#success-msg').show();
         setTimeout( function() { $('#success-msg').fadeOut(); }, 3000);
@@ -45,9 +53,16 @@
       <h4>Desktop Notifications</h4>
       <p>
         Please specify the desktop notifications behavior:<br/><br/>
-        <input id='only_when_convore_window_unfocused' type='radio' name='notifications' value='only_when_convore_window_unfocused'> Show only when <b>convore</b> window is non focused or non existent <br/>
+        <input id='only_when_convore_window_unfocused' type='radio' name='notifications' value='only_when_convore_window_unfocused'> Show only when <b>convore</b>'s website is not your active focused tab <br/>
         <input id='always' type='radio' name='notifications' value='always'> Always show notifications <br/>
         <input id='never' type='radio' name='notifications' value='never'> Silence notifications (shhhhh!)
+      </p>
+
+      <h4>Media Display</h4>
+      <p>
+        Please specify your media display preferences:<br/><br/>
+        <input id='show_images_inline' type='checkbox' value='show_images_inline'> Show images inline <br/>
+        <input id='show_youtube_inline' type='checkbox' value='show_youtube_inline'> Show YouTube content inline (does not autoplay!)
       </p>
 
       <br/>

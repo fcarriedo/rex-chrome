@@ -39,83 +39,7 @@ function openInConvore(relativePath) {
   }
 }
 
-/** ======================================
- *   General utils
- *  ======================================
- */
 
-function openInNewTab(url) {
-  chrome.tabs.create({url: url}, function(tab) {});
-}
-
-var linkUtils = function() {
-
-  // TODO(fcarriedo): Should we capture www.domain.com as URLs also? regex: ((http(s?):\/\/|www\.)[^\s"'*`\[\]()<>{}]+([^\s\.!?"'*`\[\]()<>{}]))
-  // URLs regex.
-  var urlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+([^\s\.!?"'*`\[\]()<>{}]))/gi;
-  // User handle regex.
-  var usrHandleRegex = /@([a-z]|[0-9]|[_])+/gi;
-  // Images URLs regex.
-  var imagesUrlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+(\.png|\.jpg|\.jpeg|\.gif))/gi;
-  // Youtube URLs regex.
-  var youtubeUrlRegex = /(http:\/\/www.youtube.com\/+([\w\-\/?=&])*)/gi;
-
-  return {
-
-    /* Linkifys URLs and user passwords. */
-    linkify: function(str) {
-      var matchArray;
-
-      // We make a copy of the original str which we can use as a clean canvas if needed before any process modifies it.
-      var origStr = str; 
-
-      // Linkify all URLs.
-      var urls = [];
-      while( (matchArray = urlRegex.exec(str) ) != null ) {
-        urls.push( matchArray[0] );
-      }
-      for( var i=0; i<urls.length; i++ ) {
-        str = str.replace(urls[i], "<a href='#' onClick=\"openInNewTab('" + urls[i] + "')\">" + urls[i] + "</a>");
-      }
-
-      // Linkify all user handles (eg. @username)
-      var usrHandles = [];
-      while( (matchArray = usrHandleRegex.exec(str) ) != null ) {
-        usrHandles.push( matchArray[0] );
-      }
-      for( var i=0; i<usrHandles.length; i++ ) {
-        var convoreUsrPath = '/users/' + usrHandles[i].substring(1);
-        str = str.replace(new RegExp(usrHandles[i], 'gi'), "<a href='#' onClick=\"openInConvore('" + convoreUsrPath + "')\">" + usrHandles[i] + "</a>");
-      }
-
-      // Append an 'img' element to the string for every image found on the string.
-      // Images will appear after the message.
-      var imgLinks = [];
-      while( (matchArray = imagesUrlRegex.exec(origStr) ) != null ) {
-        imgLinks.push("<a href='#' onClick=\"openInNewTab('" + matchArray[0] + "')\"><img src='" + matchArray[0] + "'/></a>" );
-      }
-      if( imgLinks.length !== 0 ) {
-        str += '<br/>' + imgLinks.join('<br/>');
-      }
-
-      // Create a video iframe element for every youtube video on a string.
-      // Videos will appear after the message.
-      var youtubeLinks = [];
-      while( (matchArray = youtubeUrlRegex.exec(origStr) ) != null ) {
-        var videoId = matchArray[0].match( /(v=[\w\-]+)/ );
-        if( videoId ) {
-          videoId = videoId[0].substring( 'v='.length );
-          youtubeLinks.push('<iframe width="300" src="http://www.youtube.com/embed/' + videoId + '?autohide=1&showinfo=0&rel=0" frameborder="0" allowfullscreen></iframe>');
-        }
-      }
-      if( youtubeLinks.length !== 0 ) {
-        str += '<br/>' + youtubeLinks.join('<br/>');
-      }
-
-      return str;
-    }
-  };
-}();
 
 /** ======================================
  *   Authentication
@@ -257,6 +181,91 @@ var datastore = function(storage) {
     }
   };
 }(localStorage);
+
+/** ======================================
+ *   General utils
+ *  ======================================
+ */
+
+function openInNewTab(url) {
+  chrome.tabs.create({url: url}, function(tab) {});
+}
+
+var linkUtils = function() {
+
+  // TODO(fcarriedo): Should we capture www.domain.com as URLs also? regex: ((http(s?):\/\/|www\.)[^\s"'*`\[\]()<>{}]+([^\s\.!?"'*`\[\]()<>{}]))
+  // URLs regex.
+  var urlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+([^\s\.!?"'*`\[\]()<>{}]))/gi;
+  // User handle regex.
+  var usrHandleRegex = /@([a-z]|[0-9]|[_])+/gi;
+  // Images URLs regex.
+  var imagesUrlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+(\.png|\.jpg|\.jpeg|\.gif))/gi;
+  // Youtube URLs regex.
+  var youtubeUrlRegex = /(http:\/\/www.youtube.com\/+([\w\-\/?=&])*)/gi;
+
+  var displayImagesInline = (datastore.get('settings.display.images') || 'true') == 'true';
+  var displayYouTubeInline = (datastore.get('settings.display.youtube') || 'true') == 'true';
+
+  return {
+
+    /* Linkifys URLs and user passwords. */
+    linkify: function(str) {
+      var matchArray;
+
+      // We make a copy of the original str which we can use as a clean canvas if needed before any process modifies it.
+      var origStr = str; 
+
+      // Linkify all URLs.
+      var urls = [];
+      while( (matchArray = urlRegex.exec(str) ) != null ) {
+        urls.push( matchArray[0] );
+      }
+      for( var i=0; i<urls.length; i++ ) {
+        str = str.replace(urls[i], "<a href='#' onClick=\"openInNewTab('" + urls[i] + "')\">" + urls[i] + "</a>");
+      }
+
+      // Linkify all user handles (eg. @username)
+      var usrHandles = [];
+      while( (matchArray = usrHandleRegex.exec(str) ) != null ) {
+        usrHandles.push( matchArray[0] );
+      }
+      for( var i=0; i<usrHandles.length; i++ ) {
+        var convoreUsrPath = '/users/' + usrHandles[i].substring(1);
+        str = str.replace(new RegExp(usrHandles[i], 'gi'), "<a href='#' onClick=\"openInConvore('" + convoreUsrPath + "')\">" + usrHandles[i] + "</a>");
+      }
+
+      // Append an 'img' element to the string for every image found on the string.
+      // Images will appear after the message.
+      if( displayImagesInline ) {
+        var imgLinks = [];
+        while( (matchArray = imagesUrlRegex.exec(origStr) ) != null ) {
+          imgLinks.push("<a href='#' onClick=\"openInNewTab('" + matchArray[0] + "')\"><img src='" + matchArray[0] + "'/></a>" );
+        }
+        if( imgLinks.length !== 0 ) {
+          str += '<br/>' + imgLinks.join('<br/>');
+        }
+      }
+
+      // Create a video iframe element for every youtube video on a string.
+      // Videos will appear after the message.
+      if( displayYouTubeInline ) {
+        var youtubeLinks = [];
+        while( (matchArray = youtubeUrlRegex.exec(origStr) ) != null ) {
+          var videoId = matchArray[0].match( /(v=[\w\-]+)/ );
+          if( videoId ) {
+            videoId = videoId[0].substring( 'v='.length );
+            youtubeLinks.push('<iframe width="300" src="http://www.youtube.com/embed/' + videoId + '?autohide=1&showinfo=0&rel=0" frameborder="0" allowfullscreen></iframe>');
+          }
+        }
+        if( youtubeLinks.length !== 0 ) {
+          str += '<br/>' + youtubeLinks.join('<br/>');
+        }
+      }
+
+      return str;
+    }
+  };
+}();
 
 /** ======================================
  *   Notification utils

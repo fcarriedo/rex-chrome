@@ -228,6 +228,9 @@ div.info-box div.info-container div.info {
 #messages-pane .info {
   font-size: 70%;
 }
+#messages-pane iframe {
+  padding: 5px 0px 5px 0px;
+}
 #messages-pane #msg-form img {
   width: 24px;
 }

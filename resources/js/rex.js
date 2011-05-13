@@ -254,7 +254,7 @@ var linkUtils = function() {
           var videoId = matchArray[0].match( /(v=[\w\-]+)/ );
           if( videoId ) {
             videoId = videoId[0].substring( 'v='.length );
-            youtubeLinks.push('<iframe width="300" src="http://www.youtube.com/embed/' + videoId + '?autohide=1&showinfo=0&rel=0" frameborder="0" allowfullscreen></iframe>');
+            youtubeLinks.push('<iframe width="300" src="http://www.youtube.com/embed/' + videoId + '?autohide=1&showinfo=0&rel=0&fs=0" frameborder="0"></iframe>');
           }
         }
         if( youtubeLinks.length !== 0 ) {

@@ -279,6 +279,7 @@
 
 
         $('#messages-topic-title').text( topic.text );
+        $('.header #group-name').text( session.selectedGroup()['text'] );
 
         convoreApi.fetchTopicMessages( topicId , function( messages ) {
           $('#messages-pane .content-box').html( $('#message-tmpl').tmpl( messages ) );
@@ -689,8 +690,10 @@
 
         <!-- Groups pane -->
         <div id='groups-pane' class='content-pane'>
-          <div class='title'>
-            Groups
+          <div class='header'>
+            <div class='title'>
+              Your Groups
+            </div>
           </div><br/>
           <div class='content-box'>
             <!-- Here goes the content. -->
@@ -699,8 +702,13 @@
 
         <!-- Topics pane -->
         <div id='topics-pane' class='content-pane'>
-          <div class='title'>
-            <img src='resources/images/group.png' width='15px'/> <span id='topics-group-title'></span>
+          <div class='header'>
+            <div class='title'>
+              <img src='resources/images/group.png' width='15px'/> <span id='topics-group-title'></span>
+            </div>
+            <div class='breadcrumbs'>
+              <b><a href='#' onClick=''>Your Groups</a></b>
+            </div>
           </div>
           <div class='back-link'><a href='#' onClick='scrollBackTo( panes.groups )'>&larr; Groups</a></div>
           <div class='content-box'>
@@ -710,8 +718,13 @@
 
         <!-- Messages pane -->
         <div id='messages-pane' class='content-pane'>
-          <div class='title'>
-            <img src='resources/images/chat.png' width='15px'/> <span id='messages-topic-title'></span>
+          <div class='header'>
+            <div class='title'>
+              <img src='resources/images/chat.png' width='15px'/> <span id='messages-topic-title'></span>
+            </div>
+            <div class='breadcrumbs'>
+              <a href='#' onClick=''>Your Groups</a> &gt; <b><a id='group-name' href='#' onClick=''></a></b>
+            </div>
           </div>
           <div class='back-link'><a href='#' onClick='scrollBackTo( panes.topics )'>&larr; Topics</a></div>
           <div class='content-box'>

@@ -202,6 +202,7 @@ var linkUtils = function() {
   var imagesUrlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+(\.png|\.jpg|\.jpeg|\.gif))/gi;
   // Youtube URLs regex.
   var youtubeUrlRegex = /(http:\/\/www.youtube.com\/+([\w\-\/?=&])*)/gi;
+  var youtubeShortenedUrlRegex = /(http:\/\/youtu.be\/+([\w\-\/?=&])*)/gi;
 
   var displayImagesInline = (datastore.get('settings.display.images') || 'true') == 'true';
   var displayYouTubeInline = (datastore.get('settings.display.youtube') || 'true') == 'true';
@@ -254,6 +255,12 @@ var linkUtils = function() {
           var videoId = matchArray[0].match( /(v=[\w\-]+)/ );
           if( videoId ) {
             videoId = videoId[0].substring( 'v='.length );
+            youtubeLinks.push('<iframe width="300" src="http://www.youtube.com/embed/' + videoId + '?autohide=1&showinfo=0&rel=0&fs=0" frameborder="0"></iframe>');
+          }
+        }
+        while( (matchArray = youtubeShortenedUrlRegex.exec(origStr) ) != null ) {
+          var videoId = matchArray[0].substring( matchArray[0].lastIndexOf('/')+1 );
+          if( videoId ) {
             youtubeLinks.push('<iframe width="300" src="http://www.youtube.com/embed/' + videoId + '?autohide=1&showinfo=0&rel=0&fs=0" frameborder="0"></iframe>');
           }
         }

@@ -279,7 +279,7 @@
 
 
         $('#messages-topic-title').text( topic.text );
-        $('.header #group-name').text( session.selectedGroup()['text'] );
+        $('.navigation #group-name').text( session.selectedGroup()['text'] );
 
         convoreApi.fetchTopicMessages( topicId , function( messages ) {
           $('#messages-pane .content-box').html( $('#message-tmpl').tmpl( messages ) );
@@ -331,13 +331,30 @@
       }
 
       function scrollBackTo( pane ) {
-        session.currentPane( pane );
+        var currentPane = session.currentPane();
+        var newPane = pane;
+
+        if( newPane === currentPane ) {
+          return;
+        }
+
+        session.currentPane( newPane );
 
         // Make sure that the msg form is cleared
         cleanMessageTextArea();
         $('#msg-form textarea').blur();
 
-        $('#full-pane').animate({"left": "+=350px"}, "fast");
+        var paneWidth = 350;
+        // If traveling from messages pane to groups pane = 2 panes.
+        if( currentPane === panes.messages && newPane === panes.groups ) {
+          paneWidth *= 2;
+        }
+
+        $('#full-pane').animate({"left": "+=" + paneWidth + "px"}, "fast");
+      }
+
+      function scrollHome() {
+        scrollBackTo( panes.groups );
       }
 
       function setLoadingMsg(pane) {
@@ -653,7 +670,7 @@
     <!-- Header section -->
     <div id="header">
       <div id="header-logo">
-        <img id='rex-header' src='resources/images/rex-header.png' title='rex'/>
+        <a href='#' onClick='scrollHome()'><img id='rex-header' src='resources/images/rex-header.png' title='rex'/></a>
       </div>
       <div id="header-right">
         <div id="notifications-pane">
@@ -692,7 +709,7 @@
         <div id='groups-pane' class='content-pane'>
           <div class='header'>
             <div class='title'>
-              Your Groups
+              Groups
             </div>
           </div><br/>
           <div class='content-box'>
@@ -702,15 +719,15 @@
 
         <!-- Topics pane -->
         <div id='topics-pane' class='content-pane'>
-          <div class='header'>
-            <div class='breadcrumbs'>
-              <b><a href='#' onClick=''>Your Groups</a></b>
-            </div>
-            <div class='title'>
-              <img src='resources/images/group.png' width='15px'/> <span id='topics-group-title'></span>
-            </div>
+          <div class='title'>
+            <img src='resources/images/group.png' width='15px'/> <span id='topics-group-title'></span>
           </div>
-          <div class='back-link'><a href='#' onClick='scrollBackTo( panes.groups )'>&larr; Groups</a></div>
+          <div class='navigation'>
+            <div class='breadcrumbs'>
+              <b><a href='#' onClick='scrollBackTo( panes.groups )'>Groups</a></b>
+            </div>
+            <div class='back-link'><a href='#' onClick='scrollBackTo( panes.groups )'>&larr; Groups</a></div>
+          </div>
           <div class='content-box'>
             <!-- Here goes the content. -->
           </div>
@@ -718,15 +735,16 @@
 
         <!-- Messages pane -->
         <div id='messages-pane' class='content-pane'>
-          <div class='header'>
-            <div class='breadcrumbs'>
-              <a href='#' onClick=''>Your Groups</a> &gt; <b><a id='group-name' href='#' onClick=''></a></b>
-            </div>
-            <div class='title'>
-              <img src='resources/images/chat.png' width='15px'/> <span id='messages-topic-title'></span>
-            </div>
+          <div class='title'>
+            <img src='resources/images/chat.png' width='15px'/> <span id='messages-topic-title'></span>
           </div>
-          <div class='back-link'><a href='#' onClick='scrollBackTo( panes.topics )'>&larr; Topics</a></div>
+          <div class='navigation'>
+            <div class='breadcrumbs'>
+              <a href='#' onClick='scrollBackTo( panes.groups )'>Groups</a> &gt; 
+              <b><a id='group-name' href='#' onClick='scrollBackTo( panes.topics )'></a></b>
+            </div>
+            <div class='back-link'><a href='#' onClick='scrollBackTo( panes.topics )'>&larr; Topics</a></div>
+          </div>
           <div class='content-box'>
             <!-- Here goes the content. -->
           </div>

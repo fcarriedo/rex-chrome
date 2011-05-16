@@ -116,31 +116,34 @@ div.badge div.badge-text {
   width: 350px;
   background-color: #fafafa;
 }
-div.content-pane div.header {
+div.content-pane div.title {
+  font-weight: bold;
   background-color: #FFF9CF;
   border-bottom: thin solid orange;
   display: -webkit-box;
-  -webkit-box-orient: vertical;
   -webkit-box-shadow: 0px 2px 2px #ccc;
+  padding: 4px;
 }
-div.content-pane div.header div.title {
-  font-weight: bold;
-  padding: 3px;
-}
-div.content-pane div.header div.breadcrumbs {
-  text-align: right;
+div.content-pane div.navigation {
+  display: -webkit-box;
+  padding: 5px 4px 8px 4px;
   font-size: 55%;
   color: #aaa;
-  padding: 3px 3px 0px 3px;
 }
-div.content-pane div.header div.breadcrumbs a {
+div.content-pane div.navigation div.breadcrumbs {
+  -webkit-box-flex: 1;
+}
+div.content-pane div.navigation div.breadcrumbs a {
   color: #aaa;
 }
-div.content-pane div.back-link {
-  font-size: 70%;
-  color: #999;
-  padding: 4px;
+div.content-pane div.navigation div.breadcrumbs a:hover {
+  color: #3D3DFF;
+}
+div.content-pane div.navigation div.back-link {
   text-align: right;
+}
+div.content-pane div.navigation div.back-link a {
+  color: #3D3DFF;
 }
 div.content-pane div.content-box {
   overflow-y: auto;

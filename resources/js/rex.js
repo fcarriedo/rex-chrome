@@ -202,7 +202,7 @@ var linkUtils = function() {
   var imagesUrlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+(\.png|\.jpg|\.jpeg|\.gif))/gi;
   // Youtube URLs regex.
   var youtubeUrlRegex = /(http:\/\/www.youtube.com\/+([\w\-\/?=&])*)/gi;
-  var youtubeShortenedUrlRegex = /(http:\/\/youtu.be\/+([\w\-\/?=&])*)/gi;
+  var youtubeShortenedUrlRegex = /(http:\/\/youtu.be\/+([\w\-])*)/gi;
 
   var displayImagesInline = (datastore.get('settings.display.images') || 'true') == 'true';
   var displayYouTubeInline = (datastore.get('settings.display.youtube') || 'true') == 'true';

@@ -130,20 +130,17 @@ div.content-pane div.navigation {
   font-size: 55%;
   color: #aaa;
 }
-div.content-pane div.navigation div.breadcrumbs {
+div.navigation div.breadcrumbs {
   -webkit-box-flex: 1;
 }
-div.content-pane div.navigation div.breadcrumbs a {
+div.navigation div.breadcrumbs a {
   color: #aaa;
 }
-div.content-pane div.navigation div.breadcrumbs a:hover {
-  color: #3D3DFF;
+div.navigation div.breadcrumbs a#group-name {
+  color: orange;
 }
-div.content-pane div.navigation div.back-link {
+div.navigation div.back-link {
   text-align: right;
-}
-div.content-pane div.navigation div.back-link a {
-  color: #3D3DFF;
 }
 div.content-pane div.content-box {
   overflow-y: auto;

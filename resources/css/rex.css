@@ -118,11 +118,18 @@ div.badge div.badge-text {
 }
 div.content-pane div.title {
   font-weight: bold;
-  background-color: #FFF9CF;
+  border-top: thin solid orange;
   border-bottom: thin solid orange;
   display: -webkit-box;
   -webkit-box-shadow: 0px 2px 2px #ccc;
   padding: 4px;
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.42, rgb(255,247,196)),
+    color-stop(0.71, rgb(255,251,222))
+  );
 }
 div.content-pane div.breadcrumbs {
   padding: 5px 4px 8px 4px;

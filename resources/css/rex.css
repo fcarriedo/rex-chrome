@@ -124,23 +124,19 @@ div.content-pane div.title {
   -webkit-box-shadow: 0px 2px 2px #ccc;
   padding: 4px;
 }
-div.content-pane div.navigation {
-  display: -webkit-box;
+div.content-pane div.breadcrumbs {
   padding: 5px 4px 8px 4px;
   font-size: 55%;
   color: #aaa;
 }
-div.navigation div.breadcrumbs {
-  -webkit-box-flex: 1;
+div.content-pane div.breadcrumbs {
+  text-align: right;
 }
-div.navigation div.breadcrumbs a {
+div.content-pane div.breadcrumbs a {
   color: #aaa;
 }
-div.navigation div.breadcrumbs a#group-name {
+div.content-pane div.breadcrumbs a#group-name {
   color: orange;
-}
-div.navigation div.back-link {
-  text-align: right;
 }
 div.content-pane div.content-box {
   overflow-y: auto;

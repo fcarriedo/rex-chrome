@@ -279,7 +279,7 @@
 
 
         $('#messages-topic-title').text( topic.text );
-        $('.navigation #group-name').text( session.selectedGroup()['text'] );
+        $('.breadcrumbs #group-name').text( session.selectedGroup()['text'] );
 
         convoreApi.fetchTopicMessages( topicId , function( messages ) {
           $('#messages-pane .content-box').html( $('#message-tmpl').tmpl( messages ) );
@@ -722,11 +722,8 @@
           <div class='title'>
             <img src='resources/images/group.png' width='15px'/> <span id='topics-group-title'></span>
           </div>
-          <div class='navigation'>
-            <div class='breadcrumbs'>
-              <a href='#' onClick='scrollBackTo( panes.groups )'>Groups</a>
-            </div>
-            <div class='back-link'><a href='#' onClick='scrollBackTo( panes.groups )'>&larr; Groups</a></div>
+          <div class='breadcrumbs'>
+            <a href='#' onClick='scrollBackTo( panes.groups )'>Groups</a>
           </div>
           <div class='content-box'>
             <!-- Here goes the content. -->
@@ -738,12 +735,9 @@
           <div class='title'>
             <img src='resources/images/chat.png' width='15px'/> <span id='messages-topic-title'></span>
           </div>
-          <div class='navigation'>
-            <div class='breadcrumbs'>
-              <a href='#' onClick='scrollBackTo( panes.groups )'>Groups</a> &gt; 
-              <b><a id='group-name' href='#' onClick='scrollBackTo( panes.topics )'></a></b>
-            </div>
-            <div class='back-link'><a href='#' onClick='scrollBackTo( panes.topics )'>&larr; Topics</a></div>
+          <div class='breadcrumbs'>
+            <a href='#' onClick='scrollBackTo( panes.groups )'>Groups</a> &gt; 
+            <b><a id='group-name' href='#' onClick='scrollBackTo( panes.topics )'></a></b>
           </div>
           <div class='content-box'>
             <!-- Here goes the content. -->

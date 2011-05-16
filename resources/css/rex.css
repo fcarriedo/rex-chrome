@@ -164,10 +164,17 @@ div#msg-form textarea {
   font-size: 70%;
 }
 div#msg-form a#submit {
-  font-size: 70%;
-  border: 1px solid blue;
-  background-color: lightblue;
-  padding: 2px;
+  font-size: 65%;
+  padding: 5px;
+  border-radius: 3px;
+  color: white;
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.42, rgb(7,88,181)),
+    color-stop(0.71, rgb(34,134,240))
+  );
 }
 
 

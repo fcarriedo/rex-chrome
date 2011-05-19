@@ -27,7 +27,8 @@ function ConvoreAPI( authCxt ) {
 
   $.ajaxSetup({
     username: settings.authUsr,
-    password: settings.authPswd
+    password: settings.authPswd,
+    cache: false
   });
 
   /*
@@ -96,6 +97,13 @@ function ConvoreAPI( authCxt ) {
     var url = convoreApiUrl + '/groups.json';
     $.getJSON(url, function(data) {
       callback.call(this, data.groups );
+    });
+  }
+
+  self.fetchGroupDetails = function( groupId, callback ) {
+    var url = convoreApiUrl + '/groups/' + groupId + '.json';
+    $.getJSON(url, function(data) {
+      callback.call(this, data.group );
     });
   }
 

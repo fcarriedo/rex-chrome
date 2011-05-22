@@ -95,7 +95,7 @@
               postToUiRealTime( msg );
               convoreApi.fetchGroupDetails( msg.group, function( group ) {
                 if( group.tracked ) {
-                  var title = 'New Topic Created in "' + group.name + '"';
+                  var title = 'New Topic Created in \'' + group.name + '\'';
                   var body = '"' + msg.name + '"';
                   var url = msg.url;
                   showSimpleNotification(url, title, body);

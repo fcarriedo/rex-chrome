@@ -27,8 +27,7 @@ function ConvoreAPI( authCxt ) {
 
   $.ajaxSetup({
     username: settings.authUsr,
-    password: settings.authPswd,
-    cache: false
+    password: settings.authPswd
   });
 
   /*

@@ -197,7 +197,7 @@ var linkUtils = function() {
   // URLs regex.
   var urlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+([^\s\.!?"'*`\[\]()<>{}]))/gi;
   // User handle regex.
-  var usrHandleRegex = /@([a-z]|[0-9]|[_])+/gi;
+  var usrHandleRegex = /(^|\s)(@[\w]+)/gi;
   // Images URLs regex.
   var imagesUrlRegex = /(http(s?):\/\/[^\s"'*`\[\]()<>{}]+(\.png|\.jpg|\.jpeg|\.gif))/gi;
   // Youtube URLs regex.

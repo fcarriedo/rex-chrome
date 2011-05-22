@@ -100,7 +100,7 @@ function ConvoreAPI( authCxt ) {
   }
 
   self.fetchGroupDetails = function( groupId, callback ) {
-    var url = convoreApiUrl + '/groups/' + groupId + '.json';
+    var url = convoreApiUrl + '/groups/' + groupId + '.json?callback=?';
     $.getJSON(url, function(data) {
       callback.call(this, data.group );
     });
